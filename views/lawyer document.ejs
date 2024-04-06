@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lawyer Document</title>
+  <link rel="stylesheet" href="http://localhost:3000/static/styleparty.css">
+  <!-- modal form css -->
+  <style>
+    /*add full-width input fields*/
+    input[type=text],
+    input[type=files] {
+      width: 100%;
+      padding: 12px 20px;
+      margin: 8px 0;
+      display: inline-block;
+      border: 2px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    /* set a style for all buttons*/
+    button {
+      background-color: green;
+      color: white;
+      padding: 14px 20px;
+      margin: 8px 0;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    /*set styles for the cancel button*/
+    .cancelbtn {
+      padding: 14px 20px;
+      background-color: #FF2E00;
+    }
+
+    /*float cancel and signup buttons and add an equal width*/
+    .cancelbtn,
+    .signupbtn {
+      margin-inline: auto;
+      width: 70%
+    }
+
+    /*add padding to container elements*/
+    .container {
+      padding: 16px;
+    }
+
+    /*define the modal’s background*/
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgb(0, 0, 0);
+      background-color: rgba(0, 0, 0, 0.4);
+      padding-top: 60px;
+    }
+
+    /*define the modal-content background*/
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 5% auto 15% auto;
+      border: 1px solid #888;
+      width: 80%;
+    }
+
+    /*define the close button*/
+
+    .close {
+      position: absolute;
+      right: 35px;
+      top: 15px;
+      color: #000;
+      font-size: 40px;
+      font-weight: bold;
+    }
+
+    /*define the close hover and focus effects*/
+
+    .close:hover,
+    .close:focus {
+      color: red;
+      cursor: pointer;
+    }
+
+    .clearfix::after {
+      content: "";
+      clear: both;
+      display: table;
+    }
+
+    @media screen and (max-width: 600px) {
+
+      .cancelbtn,
+      .signupbtn {
+        width: 100%;
+      }
+    }
+  </style>
+  <!-- card css -->
+  <style>
+    .card {
+      width: 400px;
+      height: 300px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 20px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background-color: #fcfcfc;
+    }
+
+    .header {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .folder-icon {
+      width: 80px;
+      /* Adjust size as needed */
+      height: auto;
+      /* Maintain aspect ratio */
+    }
+
+    .file-details {
+      display: flex;
+      align-items: center;
+    }
+
+    .file-name {
+      margin-left: 10px;
+    }
+
+    .doc-id {
+      font-size: 14px;
+      color: #555;
+      margin-top: 10px;
+    }
+
+    .uploaded-by {
+      font-style: italic;
+    }
+
+    .button-container {
+      text-align: center;
+    }
+
+    .view-document-button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .view-document-button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+  <!-- upload and delete button css -->
+  <style>
+    .fixed {
+      position: fixed;
+      left: 6%;
+      bottom: 11%;
+      padding: 20px;
+      background-color: rgb(255, 255, 255);
+      border: 1.5px solid rgb(54, 140, 232);
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      /* Add spacing between buttons */
+      border-radius: 10px;
+      /* Add rounded corners */
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+      /* Add box shadow for depth */
+    }
+
+    .fixed button {
+      color: white;
+      padding: 18px;
+      background-color: rgb(54, 140, 232);
+      border: none;
+      border-radius: 5px;
+      /* Add rounded corners to buttons */
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .fixed button:hover {
+      background-color: rgb(120, 200, 200);
+      /* Lighten the background color on hover */
+    }
+  </style>
+  <!-- modal css -->
+  <style>
+    .modal {
+      position: absolute;
+      display: none;
+      width: 600px;
+      height: 300px;
+      background-color: #e6f7ff;
+      z-index: 1;
+      left: 20%;
+      bottom: 20%;
+      justify-content: center;
+      align-items: center;
+      border-radius: 10px;
+      /* Add rounded corners to modals */
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+      /* Add box shadow for depth */
+    }
+
+    .modal form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 80%;
+      /* Adjust form width */
+      margin: auto;
+      /* Center the form horizontally */
+    }
+
+    .modal input[type="file"],
+    .modal input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+
+    .modal button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .modal button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="Dashboard">
+    <nav class="navbar">
+      <div class="logo"><img src="http://localhost:3000/static/svg-image-1.png" alt="logo"></div>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Contact</a></li>
+        <a title="SIGN OUT" class="circle" href="#"><i class="fa-solid fa-right-from-bracket"></i></a>
+      </ul>
+    </nav>
+    <main>
+      <div class="cases" style="justify-content: left; justify-content: space-evenly; gap: 50px; ">
+        <!-- cards -->
+      </div>
+      <div class="CaseInfo">
+        <div class="caseheading">Case Information</div>
+        <div class="rule"></div>
+        <div class="casedetail">
+          <div class="cNo casedata">Case No : </div>
+          <div class="cTitle casedata">Case Title : </div>
+          <div class="cDescription casedata">Case Description : </div>
+          <div class="judge casedata">Judge : Honorable </div>
+        </div>
+      </div>
+      <div class="fixed">
+        <button class="upload">Upload Document</button>
+        <button class="delete">Delete Document</button>
+        <input id="hidden" type="hidden">
+      </div>
+
+      <div id="uploadModal" class="modal">
+        <form id="uploadRecord" class="modal-content animate">
+          <div class="container">
+            <form>
+              <label for="record"><b>Upload the Document : </b></label>
+              <input id="fileInput" type="file" placeholder="Enter Document Id" name="record" required>
+              <div class="clearfix">
+                <button type="submit" class="signupbtn">Upload Document</button>
+              </div>
+            </form>
+          </div>
+        </form>
+      </div>
+
+      <div id="deleteModal" class="modal">
+        <form id="deleteRecord" class="modal-content animate">
+          <div class="container">
+              <label for="docID"><b>Document ID</b></label>
+              <input id="docID" type="text" placeholder="Enter Document Id" name="docID" required>
+              <div class="clearfix">
+                <button type="submit" class="signupbtn">Delete Doc</button>
+              </div>
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+  <script src="https://kit.fontawesome.com/0fbde46a6c.js" crossorigin="anonymous"></script>
+
+
+  <!-- event wali script -->
+  <script>
+    // <!-- Corrected JavaScript -->
+    var uploadModal = document.getElementById('uploadModal');
+    var deleteModal = document.getElementById('deleteModal');
+    var uploadButton = document.querySelector('.upload');
+    var deleteButton = document.querySelector('.delete');
+
+    // Function to close any open modals
+    function closeModals() {
+      if (uploadModal.style.display === "flex") {
+        uploadModal.style.display = "none";
+      }
+      if (deleteModal.style.display === "flex") {
+        deleteModal.style.display = "none";
+      }
+    }
+
+    // Function to handle button click event
+    function handleButtonClick(modal) {
+      closeModals(); // Close any open modals
+      modal.style.display = "flex"; // Display the clicked modal
+    }
+
+    // Event listener for upload button
+    uploadButton.onclick = function () {
+      handleButtonClick(uploadModal);
+      uploadButton.style.display = "flex"; // Flex the clicked button
+    };
+
+    // Event listener for delete button
+    deleteButton.onclick = function () {
+      handleButtonClick(deleteModal);
+      deleteButton.style.display = "flex"; // Flex the clicked button
+    };
+
+    // Event listener to close modal when clicking outside
+    window.onclick = function (event) {
+      if (event.target === uploadModal || event.target === deleteModal) {
+        closeModals();
+      }
+    };
+
+    const token = "<%=intoken%>";
+    const caseID = "<%=incaseID%>";
+
+    const requestBody = JSON.stringify({
+      token,
+      caseID
+    });
+
+    //upload modal form
+    document.getElementById("uploadRecord").addEventListener("submit", function (event) {
+      event.preventDefault(); // Prevent default form submission
+      const fileInput = document.getElementById('fileInput');
+      const partyID = document.getElementById('hidden').value; // Sample partyID
+      //console.log(partyID);
+      // Create a new FormData object to store form data
+      const formData = new FormData();
+
+      // Append the selected file(s) to the FormData object
+      const files = fileInput.files;
+      for (let i = 0; i < files.length; i++) {
+        formData.append('record', files[i]);
+      }
+
+      // Append the partyID to the FormData object
+      formData.append('partyID', partyID);
+
+      // Make a fetch request to the server
+      fetch('http://localhost:3000/api/v1/doc/newRecord', {
+        method: 'POST',
+        body: formData
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          //console.log('Response from server:', data);
+          // Handle the response data as needed
+          fileInput.value = "";
+          location.reload();
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          // Handle errors
+        });
+
+
+    });
+
+    document.getElementById("deleteRecord").addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    const partyID = document.getElementById('hidden').value;
+    const docID = document.getElementById('docID').value.trim();
+    
+    const deleteBody = {
+        partyID: partyID,
+        docID: docID
+    };
+
+    fetch('http://localhost:3000/api/v1/doc/deleteRecord', {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(deleteBody)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Handle successful response
+        console.log(data);
+        // Reload the page or perform any other actions as needed
+        location.reload();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        // Handle errors
+    });
+});
+
+    async function fetchDataAndArrange() {
+
+      const response = await fetch("http://localhost:3000/api/v1/case/caseDetail", {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json' // Specify content type as JSON
+        },
+        body: requestBody,
+      });
+      const responseData = await response.json(); // Parse the JSON response
+      if (responseData.success) {
+        const doc = responseData.caseData.documents; // Access the array of case objects
+        arrange(doc); // Call the arrange function with the array of cases
+        casedetail(responseData.caseDetail);
+        const partyID = responseData.caseData._id;
+        operation(partyID);
+        const test = document.getElementById('hidden');
+        console.log(test.value);
+      } else {
+        console.error("Failed to retrieve cases:", responseData.message);
+      }
+    }
+
+    // Define a function to arrange data into cards
+    function arrange(doc) {
+      // console.log(party);
+      const cardsContainer = document.querySelector('.cases');
+      doc.forEach(doc => {
+        const card = document.createElement('div');
+        card.classList = 'card';
+
+        const head = document.createElement('div');
+        head.classList = 'header';
+        head.textContent = "Document Details";
+
+        const img = document.createElement('img');
+        img.classList = "folder-icon";
+        img.setAttribute('src', 'http://localhost:3000/static/folder image.png');
+        img.setAttribute('alt', 'Folder Icon');
+
+        const fileDetails = document.createElement('div');
+        fileDetails.classList = "file-details";
+
+        const spn = document.createElement('span');
+        spn.classList = "file-name";
+        spn.textContent = doc.fileName;
+
+        fileDetails.appendChild(spn);
+
+        const docID = document.createElement('div');
+        docID.classList = "doc-id";
+        docID.textContent = "Document ID : " + doc._id;
+
+        const upby = document.createElement('div');
+        upby.classList = "uploaded-by";
+        upby.textContent = "Uploaded By : Advocate " + doc.uploadedBY.firstName + " " + doc.uploadedBY.lastName;
+
+        const btnContainer = document.createElement('div');
+        btnContainer.classList = "button-container";
+
+        const hiddenInput = document.createElement('input');
+        hiddenInput.setAttribute('type', 'hidden');
+        const filePath = doc.url;
+        const filename = filePath.split('\\').pop();
+        hiddenInput.setAttribute('value', filename);
+
+        const btn = document.createElement('button');
+        btn.classList = 'view-document-button';
+        btn.innerText = "View Document";
+
+        btn.onclick = function () {
+          // Find the closest parent card element
+          var card = this.closest('.card');
+          if (card) {
+            var fname = card.querySelector(".file-name").textContent;
+            // Find the hidden input element within the card
+            var hiddenInput = card.querySelector('input[type="hidden"]');
+            if (hiddenInput) {
+              var hiddenValue = hiddenInput.value;
+              console.log(hiddenValue); // Output the hidden value
+              console.log(fname);
+              newpage(fname,hiddenValue);
+            }
+          }
+        };
+        btnContainer.appendChild(btn);
+        card.appendChild(hiddenInput);
+        card.appendChild(head);
+        card.appendChild(img);
+        card.appendChild(fileDetails);
+        card.appendChild(docID);
+        card.appendChild(upby);
+        card.appendChild(btnContainer);
+        cardsContainer.appendChild(card);
+      });
+    }
+
+    //function to populate the information in right panel of the UI regarding the case information
+    function casedetail(data) {
+      //console.log(data);
+      const caseNo = document.querySelector('.cNo');
+      caseNo.textContent += data.caseNo;
+      const casetitle = document.querySelector('.cTitle');
+      casetitle.textContent += data.title;
+      // console.log(data.title);
+      const casedesc = document.querySelector('.cDescription');
+      casedesc.textContent += data.caseDescription;
+      // console.log(data.caseDescription);;
+      const casejudge = document.querySelector('.judge');
+      casejudge.textContent += data.judge.firstName + " " + data.judge.lastName;
+    }
+    // Immediately call the async function to fetch data and arrange cards
+    function operation(party) {
+      const fix = document.querySelector('#hidden');
+      fix.setAttribute('value', party);
+    };
+
+    fetchDataAndArrange();
+    function newpage(fileName,fileLink){
+      window.location.href = `http://localhost:3000/pages/doc-view?token=${token}&fileName=${fileName}&fileLink=${fileLink}`;
+    };
+  </script>
+</body>
+
+</html>

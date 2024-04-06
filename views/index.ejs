@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LegaLock Main Page</title>
+  <link rel="stylesheet" href="http://localhost:3000/static/style.css">
+</head>
+
+<body>
+  <div class="home">
+    <nav class="navbar">
+      <div class="logo"><img src="http://localhost:3000/static/svg-image-1.png" alt="logo"></div>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Contact</a></li>
+        <li><a href="#">Register</a></li>
+        <li><i class="fa-solid fa-question"
+            title="DESCRIPTION :- The objective of this hackathon is to develop a blockchain-based eVault system for legal records that can ensure security, transparency, and accessibility for all stakeholders. The system should be able to store, manage, and share legal records securely and efficiently, with the potential to integrate with existing legal databases and case management systems. Requirements: 1. The eVault system should be based on a blockchain platform such as Ethereum, Hyperledger, or Corda, should use smart contracts to manage access, permissions, and transactions. 2. The system should have user-friendly interfaces for lawyers, judges, clients, and other stakeholders to interact with the eVault, with features such as uploading and retrieving documents, tracking changes, and sharing information. 3. The system should ensure the privacy and confidentiality of legal records, with appropriate access controls, encryption, and authentication mechanisms. 4. The system should allow for seamless integration with existing legal databases and case management systems, to ensure interoperability and ease of use. 5. The system should be scalable and adaptable to accommodate future changes and upgrades. Expected Outcomes: 1. A functional prototype of the blockchain-based eVault system for legal records, with a user-friendly interface and features such as document upload, retrieval, and sharing. 2. A detailed design document outlining the architecture, features, and technical specifications of the eVault system. 3. A business plan outlining the potential impact, market opportunities, and revenue models for the eVault system. 4. A presentation of the prototype, design document, and business plan. Impact: The development of a blockchain-based eVault system for legal records can have a significant impact on improving access to justice in India. It can lead to faster, more efficient court proceedings, reduced costs, improved data integrity, and increased trust in the justice system. Moreover, it can provide a secure and transparent platform for storing and sharing legal records, making it easier for clients to access their own records and for lawyers to access relevant case information."></i>
+        </li>
+      </ul>
+    </nav>
+    <div class="container">
+      <div class="content">
+        <h1>Lega Lock - Public & Legal Solutions</h1>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ut temporibus id facere quo ad, tenetur
+          nisi soluta iste amet animi vitae. Quis vel assumenda dolor veritatis! Incidunt, laboriosam esse!</p>
+      </div>
+      <div class="login">
+        <h2>LogIn</h2>
+        <form id="loginform">
+          <input type="text" name="email" placeholder="Enter your email">
+          <input type="password" name="password" placeholder="Enter your password">
+          <button type="submit">SUBMIT</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script src="https://kit.fontawesome.com/0fbde46a6c.js" crossorigin="anonymous"></script>
+  <script>
+    document.getElementById("loginform").addEventListener("submit", function (event) {
+      event.preventDefault(); // Prevent default form submission
+
+      // Collect form data
+      const formData = new FormData(this);
+
+      //console.log(formData);
+      // Send data to backend using fetch
+      fetch("http://localhost:3000/api/v1/auth/login", {
+        method: "POST",
+        body: formData
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return response.json();
+        })
+        .then(data => {
+          //console.log("Response from server:", data);
+          // Do something with the response if needed
+          //dashboard(data.token);
+          window.location.href = `http://localhost:3000/pages/user-dashboard?token=${data.token}`;
+        })
+        .catch(error => {
+          console.error("Error:", error);
+          // Handle errors
+        });
+    });
+
+    // function dashboard(token) {
+    //   const requestBody = JSON.stringify({
+    //     token
+    //   });
+    //   fetch("http://localhost:3000/pages/user-dashboard", {
+    //     method: "POST",
+    //     headers: {
+    //       'Authorization': `Bearer ${token}`
+    //     },
+    //     body: requestBody,
+    //   })
+    //     .then(response => response.text())
+    //     .then(html => {
+    //       document.documentElement.innerHTML = html; // Replace entire HTML content with fetched HTML
+    //       window.location.reload(); // Reload the page with the new content
+    //     })
+    //     .catch(error => {
+    //       console.error('Error fetching HTML:', error);
+    //     });
+
+    // };
+  </script>
+</body>
+
+</html>

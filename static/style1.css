@@ -1,0 +1,247 @@
+@import url('https://fonts.googleapis.com/css2?family=Croissant+One&family=Josefin+Sans&family=Merriweather&family=Pacifico&family=Playfair+Display:ital@1&display=swap');
+
+*{
+  margin: 0;
+  padding: 0;
+}
+
+:root{
+  --Croissant: 'Croissant One', serif;
+  --Josefin: 'Josefin Sans', sans-serif;
+  --Merriweather: 'Merriweather', serif;
+  --Pacifico: 'Pacifico', cursive;
+  --Playfair: 'Playfair Display', serif;
+}
+
+:root{
+  --yellow-color: #ffd700;
+  --light-yellow-color:#ffd900be;
+  --light-white-color:rgba(255, 255, 255, 0.399);
+  --red-color:#e03c31;
+  --violet-color:#671e75;
+  --blue-color:#4f758b;
+  --white-color:#ffffff;
+}
+
+:root{
+  --blue1:#4ba4e5;
+  --blue2:#0b3a72;
+  --blue3:#0f6173;
+  --blue4:#12144f;
+  --blue5:#082234;
+  --green1:#79D777;
+  --red1:#e61b1b;
+  --white1:#d9d9d9;
+}
+
+.Dashboard{
+  width: 100%;
+  height: 100vh;
+  background-color: var(--blue2);
+}
+
+.navbar{
+    display: flex;
+    width: 100%;
+    /* background-color: rgba(0, 0, 0, 0.77); */
+    height: 12%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo{
+    width: 50%;
+    height: 200%;
+}
+
+.logo img{
+    width: 30%;
+    height: 100%;
+}
+
+ul{
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+ul li{
+  list-style: none;
+  font-family: var(--Croissant);
+  font-size: 25px;
+  padding: 0px 25px;
+}
+
+ul li a{
+  color:var(--white-color);
+  position: relative;
+  text-decoration: none;
+}
+
+ul li a::after{
+  content: '';
+  width: 0%;
+  height: 3px;
+  background: var(--yellow-color);
+  left: 0;
+  bottom: -1px;
+  position: absolute;
+  transition: 0.5s;
+}
+
+ul li a:hover::after{
+  width: 100%;
+}
+
+.navbar .circle{
+  margin-left: 15px;
+  text-decoration: none;
+}
+
+.navbar .circle i{
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  font-size: 25px;
+  cursor: pointer;
+  color: white;
+  background-color: var(--blue1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+main{
+  width: 100%;
+  display: flex;
+  height: 88%;
+}
+
+main .cases{
+ 
+  width: 75%;
+  height: 100%;
+  background-color: var(--blue5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+main .cases .searchArea{
+  width: 100%;
+  height: 15%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+main .cases .searchArea h1{
+  color: var(--blue1);
+  font-family: var(--Merriweather);
+  margin-left: 25px;
+}
+
+main .cases .searchArea .searchbar{
+  padding: 0 50px;
+  position: relative;
+}
+
+main .cases .searchArea .searchbar input{
+  padding:5px;
+  font-family: var(--Merriweather);
+  outline: none;
+  font-size: 15px;
+  border-radius: 5px;
+  width: 500px;
+  border: 2px solid black;
+  background: var(--white1);
+}
+
+main .cases .searchArea .searchbar i{
+  position: absolute;
+  right: 10%;
+  top: 23%;
+  cursor: pointer;
+}
+
+main .profile{
+  width: 25%;
+  background-color: var(--blue3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0;
+}
+
+main .profile .profileIMG{
+  height: 25%;
+  width: 40%;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+main .profile .profileIMG img{
+  height: 100%;
+  width: 100%;
+}
+
+main .profile h1{
+  color: var(--white-color);
+  font-family: var(--Croissant);
+  margin: 5px 0;
+}
+
+main .cases .caseContainer{
+  width: 90%;
+  height: 80%;
+  background-color: var(--blue4);
+  border: 1px solid white;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+main .cases .caseContainer .card{
+  width: 90%;
+  /* height: 15%; */
+  background-color: var(--blue2);
+  color: var(--white1);
+  margin: 15px 0;
+  padding:10px;
+  font-family: var(--Merriweather);
+  align-items: center;
+}
+
+main .cases .caseContainer .card .upper{
+  display: flex;
+  height: 40px;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+main .cases .caseContainer .card .lower{
+  display: flex;
+  height: 40px;
+  justify-content: space-between;
+  margin-top: 5px;
+  align-items: center;
+}
+
+main .cases .caseContainer .card .lower button{
+  cursor: pointer;
+  color: white;
+  background-color: var(--blue1);
+  padding: 5px;
+  font-size: 15px;
+  width: 15%;
+  font-family: var(--Merriweather);
+}
+
+.rule{
+  width: 100%;
+  height: 1px;
+  background-color: var(--white1);
+}

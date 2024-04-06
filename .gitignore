@@ -1,0 +1,14 @@
+# Ignore Visual Studio Code settings
+.vscode/
+
+# Ignore Node.js modules
+node_modules/
+
+# Ignore environment configuration file
+.env
+
+# Ignore npm package lock file
+package-lock.json
+
+# Ignore the Records folder content
+Records/

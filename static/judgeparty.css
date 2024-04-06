@@ -1,0 +1,186 @@
+@import url('https://fonts.googleapis.com/css2?family=Croissant+One&family=Josefin+Sans&family=Merriweather&family=Pacifico&family=Playfair+Display:ital@1&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --Croissant: 'Croissant One', serif;
+  --Josefin: 'Josefin Sans', sans-serif;
+  --Merriweather: 'Merriweather', serif;
+  --Pacifico: 'Pacifico', cursive;
+  --Playfair: 'Playfair Display', serif;
+}
+
+:root {
+  --yellow-color: #ffd700;
+  --light-yellow-color: #ffd900be;
+  --light-white-color: rgba(255, 255, 255, 0.399);
+  --red-color: #e03c31;
+  --violet-color: #671e75;
+  --blue-color: #4f758b;
+  --white-color: #ffffff;
+}
+
+:root {
+  --blue1: #4ba4e5;
+  --blue2: #0b3a72;
+  --blue3: #0f6173;
+  --blue4: #12144f;
+  --blue5: #082234;
+  --green1: #79D777;
+  --red1: #e61b1b;
+  --white1: #d9d9d9;
+}
+
+.Dashboard {
+  width: 100%;
+  height: 100vh;
+  background-color: var(--blue2);
+}
+
+.navbar {
+  display: flex;
+  width: 100%;
+  /* background-color: rgba(0, 0, 0, 0.77); */
+  height: 12%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  width: 50%;
+  height: 200%;
+}
+
+.logo img {
+  width: 30%;
+  height: 100%;
+}
+
+ul {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+ul li {
+  list-style: none;
+  font-family: var(--Croissant);
+  font-size: 25px;
+  padding: 0px 25px;
+}
+
+ul li a {
+  color: var(--white-color);
+  position: relative;
+  text-decoration: none;
+}
+
+ul li a::after {
+  content: '';
+  width: 0%;
+  height: 3px;
+  background: var(--yellow-color);
+  left: 0;
+  bottom: -1px;
+  position: absolute;
+  transition: 0.5s;
+}
+
+ul li a:hover::after {
+  width: 100%;
+}
+
+.navbar .circle {
+  margin-left: 15px;
+  text-decoration: none;
+}
+
+.navbar .circle i {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  font-size: 25px;
+  cursor: pointer;
+  color: white;
+  background-color: var(--blue1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+main {
+  width: 100%;
+  display: flex;
+  height: 88%;
+}
+
+main .cases {
+  overflow-y: scroll;
+  width: 75%;
+  background-color: var(--blue5);
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: start;
+  justify-content: flex-start;
+  justify-content: space-evenly;
+  padding: 15px;
+}
+
+
+
+
+
+main .CaseInfo {
+  width: 25%;
+  background-color: var(--blue3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+main .CaseInfo .caseheading {
+  color: var(--white-color);
+  font-family: var(--Croissant);
+  margin: 0;
+  width: 100%;
+  text-align: center;
+  height: 50px;
+  font-size: 2rem;
+  background-color: var(--blue1);
+}
+
+main .CaseInfo .casedata {
+  margin: 20px 0;
+  width: 100%;
+  padding: 8px;
+  text-align: center;
+  font-size: 25px;
+  color: #d9d9d9;
+  text-align: left;
+  padding: 5px;
+}
+
+main .CaseInfo .casedetail {
+  padding: 8px;
+}
+
+.rule {
+  width: 100%;
+  height: 1px;
+  background-color: var(--white1);
+}
+
+.video {
+  width: 1080px;
+}
+
+.cases h2 {
+  color: white;
+}

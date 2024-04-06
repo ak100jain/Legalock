@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Dashboard</title>
+  <link rel="stylesheet" href="http://localhost:3000/static/style1.css">
+</head>
+
+<body>
+  <div class="Dashboard">
+    <nav class="navbar">
+      <div class="logo"><img src="http://localhost:3000/static/svg-image-1.png" alt="logo"></div>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Contact</a></li>
+        <a title="SIGN OUT" class="circle" href="#"><i class="fa-solid fa-right-from-bracket"></i></a>
+      </ul>
+    </nav>
+    <main>
+      <div class="cases">
+        <div class="searchArea">
+          <h1>CASES :</h1>
+          <div class="searchbar"><input type="text" placeholder="Search Cases" id="myInput"><i
+              class="fa-solid fa-magnifying-glass"></i></div>
+        </div>
+        <!-- <div class="rule"></div> -->
+        <div class="caseContainer">
+          <!-- <div class="card">
+            <div class="upper">
+              <h4>Case NO : 1256</h4>
+              <div class="caseInfo">
+                <h4>caseTitle : 420</h4>
+                <h4>caseDescription : Bank ke sath fraud</h4>
+              </div>
+            </div>
+            <div class="rule"></div>
+            <div class="lower">
+              <h4>Status : Active</h4>
+              <button>View Case</button>
+            </div>
+          </div> -->
+
+        </div>
+      </div>
+      <div class="profile">
+        <div class="profileIMG"><img src="http://localhost:3000/static/testIMG.jpg" alt=""></div>
+        <h1 id="name"> </h1>
+        <div class="rule"></div>
+        <div class="chats">
+          <h1>CHAT GOES HERE</h1>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="https://kit.fontawesome.com/0fbde46a6c.js" crossorigin="anonymous"></script>
+  <script>
+    const token = "<%=intoken%>";
+
+    // Define an async function to fetch data and arrange cards
+    // Define an async function to fetch data and arrange cards
+    async function fetchProfile() {
+
+      const response = await fetch("http://localhost:3000/api/v1/user/profile", {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const responseData = await response.json(); // Parse the JSON response
+      if (responseData.success) {
+        const prof = responseData.data; // Access the array of case objects
+        const name = document.getElementById('name');
+        name.innerText = prof.firstName + " " + prof.lastName;
+        // Call the arrange function with the array of cases
+      } else {
+        console.error("Failed to retrieve cases:", responseData.message);
+      }
+    }
+    async function fetchDataAndArrange() {
+
+      const response = await fetch("http://localhost:3000/api/v1/case/getCases", {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const responseData = await response.json(); // Parse the JSON response
+      if (responseData.success) {
+        const cases = responseData.data; // Access the array of case objects
+        arrange(cases); // Call the arrange function with the array of cases
+      } else {
+        console.error("Failed to retrieve cases:", responseData.message);
+      }
+    }
+
+    // Define a function to arrange data into cards
+    function arrange(cases) {
+
+      const cardsContainer = document.querySelector('.caseContainer');
+      cases.forEach(caseData => {
+        const card = document.createElement('div');
+        card.classList = 'card';
+        const upper = document.createElement('div');
+        upper.classList = 'upper';
+        const rule = document.createElement('div');
+        rule.classList = 'rule';
+        const lower = document.createElement('div');
+        lower.classList = 'lower';
+        const caseInfo = document.createElement('div');
+        caseInfo.classList = 'caseInfo';
+        const head = document.createElement('h4');
+        head.textContent = "Case No : " + caseData.caseDetail.caseNo;
+        upper.appendChild(head);
+        const head2 = document.createElement('h4');
+        head2.textContent = "Case Title : " + caseData.caseDetail.title;
+        caseInfo.appendChild(head2);
+        const head3 = document.createElement('h4');
+        head3.textContent = "Case Description : " + caseData.caseDetail.caseDescription;
+        caseInfo.appendChild(head3);
+        upper.appendChild(caseInfo);
+        const head4 = document.createElement('h4');
+        head4.innerText = "Status : Active"
+        lower.appendChild(head4);
+        const hiddenInput = document.createElement('input');
+        hiddenInput.setAttribute('type', 'hidden');
+        hiddenInput.setAttribute('value', caseData.caseDetail._id);
+        const btn = document.createElement('button');
+        btn.innerText = "View Case";
+        btn.onclick = function () {
+          // Find the closest parent card element
+          var card = this.closest('.card');
+          if (card) {
+            // Find the hidden input element within the card
+            var hiddenInput = card.querySelector('input[type="hidden"]');
+            if (hiddenInput) {
+              var hiddenValue = hiddenInput.value;
+              console.log(hiddenValue); // Output the hidden value
+              newpage(hiddenValue);
+            }
+          }
+        };
+        // Create a hidden input element
+        
+        card.appendChild(hiddenInput);
+        lower.appendChild(btn);
+        card.appendChild(upper);
+        card.appendChild(rule);
+        card.appendChild(lower);
+        cardsContainer.appendChild(card);
+      });
+    }
+
+    // Immediately call the async function to fetch data and arrange cards
+    fetchDataAndArrange();
+    fetchProfile();
+    function newpage(caseID){
+      console.log(token);
+      window.location.href = `http://localhost:3000/pages/party?token=${token}&caseID=${caseID}`;
+    };
+ 
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video viewer</title>
+  <link rel="stylesheet" href="http://localhost:3000/static/styleparty.css">
+</head>
+<body>
+  <div class="Dashboard">
+    <nav class="navbar">
+      <div class="logo"><img src="http://localhost:3000/static/svg-image-1.png" alt="logo"></div>
+      <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Contact</a></li>
+          <a title="SIGN OUT" class="circle" href="#"><i class="fa-solid fa-right-from-bracket"></i></a>
+      </ul>
+    </nav>
+    <main>
+      <div class="cases">
+        <h2><%=fileName%></h2>
+        <video src="http://localhost:3000/records/<%=fileLink%>" width="1080px"controls></video>
+      </div>
+      <div class="CaseInfo">
+        <div class="caseheading">Case Information</div>
+        <div class="rule"></div>
+        <div class="casedetail">
+            <div class="cNo casedata">Case No : 15246</div>
+            <div class="cTitle casedata">Case Title : Robbery</div>
+            <div class="cDescription casedata">Case Description : party 1 robbed the client of party 2</div>
+            <div class="judge casedata">Judge : Honorable Chandrachud Sharma</div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="https://kit.fontawesome.com/0fbde46a6c.js" crossorigin="anonymous"></script>
+</body>
+</html>

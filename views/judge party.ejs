@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Judge Party</title>
+    <link rel="stylesheet" href="http://localhost:3000/static/judgeparty.css">
+    <style>
+        .card {
+            width: 40%;
+            border: 2px solid #007bff;
+            border-radius: 10px;
+            padding: 20px;
+            box-sizing: border-box;
+            margin: 20px;
+            background-color: #f8f9fa;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .cardata {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .btn button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="Dashboard">
+        <nav class="navbar">
+            <div class="logo"><img src="http://localhost:3000/static/svg-image-1.png" alt="logo"></div>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+                <a title="SIGN OUT" class="circle" href="#"><i class="fa-solid fa-right-from-bracket"></i></a>
+            </ul>
+        </nav>
+        <main>
+            <div class="cases">
+                <!-- card -->
+            </div>
+            <div class="CaseInfo">
+                <div class="caseheading">Case Information</div>
+                <div class="rule"></div>
+                <div class="casedetail">
+                    <div class="cNo casedata">Case No : </div>
+                    <div class="cTitle casedata">Case Title : </div>
+                    <div class="cDescription casedata">Case Description : </div>
+                    <div class="judge casedata">Judge : Honorable </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="https://kit.fontawesome.com/0fbde46a6c.js" crossorigin="anonymous"></script>
+    <script>
+        const token = "<%=intoken%>";
+        const caseId = "<%=incaseID%>";
+        const requestBody = JSON.stringify({
+            token: token,
+            caseID: caseId
+        });
+
+        async function fetchDataAndArrange() {
+
+            const response = await fetch("http://localhost:3000/api/v1/case/judgeCaseDetail", {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json' // Specify content type as JSON
+                },
+                body: requestBody,
+            });
+            const responseData = await response.json(); // Parse the JSON response
+            if (responseData.success) {
+                const party = responseData.caseDetail.Party; // Access the array of case objects
+                arrange(party); // Call the arrange function with the array of cases
+                casedetail(responseData.caseDetail);
+            } else {
+                console.error("Failed to retrieve cases:", responseData.message);
+            }
+        }
+
+        // Define a function to arrange data into cards
+        function arrange(party) {
+            // console.log(party);
+            const cardsContainer = document.querySelector('.cases');
+            party.forEach(party => {
+                const card = document.createElement('div');
+                card.classList = 'card';
+
+                const partyId = document.createElement('div');
+                partyId.classList = 'party cardata';
+                partyId.textContent = "Id : " + party._id;
+
+                const law = document.createElement('div');
+                law.classList = 'lawyer cardata';
+                law.textContent = "Lawyers: ";
+                let lawyerNames = "";
+                let arr = party.lawyer;
+                arr.forEach(lawdata => {
+                    lawyerNames += `${lawdata.firstName} ${lawdata.lastName}, `;
+                });
+                law.textContent += lawyerNames.slice(0, -2);
+
+                const client = document.createElement('div');
+                client.classList = 'client cardata';
+                client.textContent = "Clients: ";
+                let ClientNames = "";
+                arr = party.client;
+                arr.forEach(clientdata => {
+                    ClientNames += `${clientdata.firstName} ${clientdata.lastName}, `;
+                });
+                client.textContent += lawyerNames.slice(0, -2);
+
+                const rule = document.createElement('div');
+                rule.classList = 'rule';
+
+                const hiddenInput = document.createElement('input');
+                hiddenInput.setAttribute('type', 'hidden');
+                hiddenInput.setAttribute('value', party._id);
+                const btn = document.createElement('div');
+                btn.classList = 'btn';
+                const buton = document.createElement('button');
+                buton.onclick = function () {
+                    // Find the closest parent card element
+                    var card = this.closest('.card');
+                    if (card) {
+                        // Find the hidden input element within the card
+                        var hiddenInput = card.querySelector('party');
+                        if (hiddenInput) {
+                            var hiddenValue = hiddenInput.value;
+                            console.log(hiddenValue); // Output the hidden value
+                            newpage(hiddenValue);
+                        }
+                    }
+                };
+                buton.innerText = "View Documents";
+                btn.appendChild(buton);
+                btn.onclick = function () {
+                    // Find the closest parent card element
+                    var card = this.closest('.card');
+                    if (card) {
+                        // Find the hidden input element within the card
+                        var hiddenInput = card.querySelector('input[type="hidden"]');
+                        if (hiddenInput) {
+                            var hiddenValue = hiddenInput.value;
+                            console.log(hiddenValue); // Output the hidden value
+                            newpage(hiddenValue);
+                        }
+                    }
+                };
+                card.appendChild(hiddenInput);
+                card.appendChild(partyId);
+                card.appendChild(law);
+                card.appendChild(client);
+                card.appendChild(rule);
+                card.appendChild(btn);
+                cardsContainer.appendChild(card);
+            });
+        }
+
+        //function to populate the information in right panel of the UI regarding the case information
+        function casedetail(data) {
+            //console.log(data);
+            const caseNo = document.querySelector('.cNo');
+            caseNo.textContent += data.caseNo;
+            const casetitle = document.querySelector('.cTitle');
+            casetitle.textContent += data.title;
+            // console.log(data.title);
+            const casedesc = document.querySelector('.cDescription');
+            casedesc.textContent += data.caseDescription;
+            // console.log(data.caseDescription);;
+            const casejudge = document.querySelector('.judge');
+            casejudge.textContent += data.judge.firstName + " " + data.judge.lastName;
+
+        }
+        // Immediately call the async function to fetch data and arrange cards
+        fetchDataAndArrange();
+        // fetchProfile();
+        function newpage(partyID) {
+            //console.log(token);
+            window.location.href = `http://localhost:3000/pages/judge-document?token=${token}&partyID=${partyID}`;
+        };
+
+    </script>
+</body>
+
+</html>
