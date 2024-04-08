@@ -130,3 +130,47 @@ exports.newAccount = async (req, res) => {
         });
     }
 };
+
+exports.updatePassword = async (req,res)=>{
+  try {
+    const { aadharNo, email } = req.body;
+    const {password} = req.body;
+
+    if (!aadharNo && !email) {
+        return res.status(400).json({
+            success: false,
+            message: "At least one field (aadharNo or email) is required",
+        });
+    }
+
+    let userDetail;
+    if (aadharNo) {
+        userDetail = await User.findOne({ aadharNo });
+    } else if (email) {
+        userDetail = await User.findOne({ email });
+    }
+
+    if (!userDetail) {
+        return res.status(404).json({
+            success: false,
+            message: "User not found",
+        });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10)
+    await User.findByIdAndUpdate(userDetail._id,{
+      password:hashedPassword
+    });
+
+    return res.status(200).json({
+        success: true,
+        message: "Password updated successfully",
+    });
+} catch (error) {
+    console.error(error);
+    return res.status(500).json({
+        success: false,
+        message: "Could not update the user password, please try again",
+    });
+}
+}
