@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="http://localhost:3000/static/admin.css">
+</head>
+
+<body>
+    <div class="screen">
+        <div class="left-menu">
+            <div class="logo">
+                <img src="http://localhost:3000/static/svg-image-1.png" alt="legalock logo">
+            </div>
+            <div class="menu">
+                <div class="menu-item menu-active" data-page="user" onclick="changeUI('user')"><i
+                        class="fa-regular fa-user nav-icon"></i>User Accounts</div>
+                <div class="menu-item" data-page="case" onclick="changeUI('case')"><i
+                        class="fa-solid fa-gavel nav-icon"></i>Case</div>
+                <div class="menu-item" data-page="party" onclick="changeUI('party')"><i
+                        class="fa-solid fa-people-group nav-icon"></i>Party</div>
+                <div class="menu-item" data-page="logout" onclick="changeUI('logout')"><i
+                        class="fa-solid fa-right-from-bracket nav-icon"></i>Log Out</div>
+            </div>
+        </div>
+        <div class="right-content">
+            <div class="hello">Hello Admin</div>
+            <div class="container">
+                <div class="topnav">
+                    <div class="item active" data-page="newAccount" onclick="activateItem(this)">New Account</div>
+                    <div class="item" data-page="deleteAccount" onclick="activateItem(this)">Delete Account</div>
+                    <div class="item" data-page="changePassword" onclick="activateItem(this)">Change Password</div>
+                </div>
+                <form class="form" id="myForm">
+                    <div class="form-content">
+                        <div class="form-group">
+                            <label for="firstName">First Name:</label>
+                            <input type="text" id="firstName" name="firstName" required>
+                            <label for="lastName">Last Name:</label>
+                            <input type="text" id="lastName" name="lastName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password:</label>
+                            <input type="password" id="password" name="password" required>
+                            <label for="role">Role:</label>
+                            <select id="role" name="role">
+                                <option value="Client">Client</option>
+                                <option value="Lawyer">Lawyer</option>
+                                <option value="Judge">Judge</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact">Contact:</label>
+                            <input type="text" id="contact" name="contact">
+                            <label for="aadharNo">Aadhar Number:</label>
+                            <input type="text" id="aadharNo" name="aadharNo">
+                        </div>
+                        <input type="submit" value="NewAccount">
+                    </div>
+                    <div id="message"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://kit.fontawesome.com/0fbde46a6c.js" crossorigin="anonymous"></script>
+    <script>
+        const token = "<%=intoken%>";
+
+        const userform = `<div class="form-group">
+                            <label for="firstName">First Name:</label>
+                            <input type="text" id="firstName" name="firstName" required>
+                            <label for="lastName">Last Name:</label>
+                            <input type="text" id="lastName" name="lastName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password:</label>
+                            <input type="password" id="password" name="password" required>
+                            <label for="role">Role:</label>
+                            <select id="role" name="role">
+                                <option value="Client">Client</option>
+                                <option value="Lawyer">Lawyer</option>
+                                <option value="Judge">Judge</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact">Contact:</label>
+                            <input type="text" id="contact" name="contact">
+                            <label for="aadharNo">Aadhar Number:</label>
+                            <input type="text" id="aadharNo" name="aadharNo">
+                        </div>
+                        <input type="submit" value="NewAccount">`;
+
+        const deleteform = `<div class="form-group">
+                <label for="aadharNo">Aadhar Number:</label>
+                <input type="text" id="aadharNo" name="aadharNo" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <input type="submit" value="DeleteAccount">`;
+
+        const passform = `<div class="form-group">
+                <label for="aadharNo">Aadhar Number:</label>
+                <input type="text" id="aadharNo" name="aadharNo" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">New Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <input type="submit" value="ChangePassword">`;
+
+        const newCase = `<div class="form-group">
+                <label for="title">Case Title:</label>
+                <input type="text" id="title" name="title" required>
+            </div>
+            <div class="form-group">
+                <label for="caseDescription">Case Description:</label>
+                <textarea id="caseDescription" name="caseDescription" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="judgeId">Judge:</label>
+                <select id="judgeId" name="judgeId">
+                    <option value="judge1">Judge 1</option>
+                    <option value="judge2">Judge 2</option>
+                    <option value="judge3">Judge 3</option>
+                </select>
+                <label for="caseNo">Case Number:</label>
+                <input type="text" id="caseNo" name="caseNo" required>
+            </div>
+            <input type="submit" value="newCase">`;
+
+        const deleteCase = `<div class="form-group">
+                <label for="caseNo">Case Number:</label>
+                <input type="text" id="caseNo" name="caseNo" required>
+            </div>
+            <input type="submit" value="DeleteCase">`;
+
+        const newParty = `<div class="form-group">  
+                <label for="caseNo">Case Number:</label>
+                <input type="text" id="caseNo" name="caseNo" required>
+            </div>
+            <div class="form-group">
+                <label for="lawyers">Lawyers:</label>
+                <textarea id="lawyers" name="lawyers" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="clients">Clients:</label>
+                <textarea id="clients" name="clients" required></textarea>
+            </div>
+            <input type="submit" value="CreateParty">
+            <div class="note">
+                Note: Multiple lawyers or clients can be added by entering their registered email separated by commas.
+            </div>`;
+
+        const deleteParty = `<div class="form-group">
+                <label for="partyId">Party Id:</label>
+                <input type="text" id="partyId" name="partyId" required>
+            </div>
+            <input type="submit" value="DeleteParty">`;
+
+        const topNav = document.getElementsByClassName('topnav')[0];
+        const Form = document.getElementsByClassName('form-content')[0];
+        const mssg = document.getElementById('message');
+
+        function changeUI(page) {
+            // Remove menu-active class from all menu items
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => item.classList.remove('menu-active'));
+
+            // Add menu-active class to the clicked menu item
+            const menuItem = document.querySelector(`.menu-item[data-page="${page}"]`);
+            menuItem.classList.add('menu-active');
+            mssg.innerText="";
+            // Perform actions based on the clicked menu item
+            switch (page) {
+                case 'user':
+                    userContainer();
+                    break;
+                case 'case':
+                    // Code for case page
+                    caseContainer();
+                    break;
+                case 'party':
+                    // Code for party page
+                    partyContainer();
+                    break;
+                case 'logout':
+                    // Code for logout
+                    break;
+                default:
+                    // Default case
+                    break;
+            }
+        }
+
+        function activateItem(item) {
+            // Remove the "active" class from all items
+            mssg.innerText="";
+            const items = document.querySelectorAll('.item');
+            items.forEach(item => item.classList.remove('active'));
+
+            // Add the "active" class to the clicked item
+            item.classList.add('active');
+            const dataPage = item.getAttribute('data-page');
+            const content = document.getElementsByClassName('form-content')[0];
+            switch (dataPage) {
+                case 'newAccount': content.innerHTML = userform;
+                    break;
+                case 'deleteAccount': content.innerHTML = deleteform;
+                    break;
+                case 'changePassword': content.innerHTML = passform;
+                    break;
+                case 'newCase': content.innerHTML = newCase;
+                    break;
+                case 'deleteCase': content.innerHTML = deleteCase;
+                    break;
+                case 'newParty': content.innerHTML = newParty;
+                    break;
+                case 'deleteParty': content.innerHTML = deleteParty;
+            }
+        }
+
+        function userContainer() {
+            topNav.innerHTML = `<div class="item active" data-page="newAccount" onclick="activateItem(this)">New Account</div>
+                    <div class="item" data-page="deleteAccount" onclick="activateItem(this)">Delete Account</div>
+                    <div class="item" data-page="changePassword" onclick="activateItem(this)">Change Password</div>`;
+            Form.innerHTML = userform;
+        }
+
+        function caseContainer() {
+            topNav.innerHTML = `<div class="item active" data-page="newCase" onclick="activateItem(this)">Create Case</div>
+                    <div class="item" data-page="deleteCase" onclick="activateItem(this)">Delete Case</div>`;
+            Form.innerHTML = newCase;
+        }
+
+        function partyContainer() {
+            topNav.innerHTML = `<div class="item active" data-page="newParty" onclick="activateItem(this)">Create Party</div>
+                    <div class="item" data-page="deleteParty" onclick="activateItem(this)">Delete Party</div>`;
+            Form.innerHTML = newParty;
+        }
+
+        document.getElementById("myForm").addEventListener("submit", function (event) {
+            event.preventDefault(); // Prevent form submission
+            var submitValue = event.submitter.value;
+            // Get form data as an object
+            var formData = new FormData(this);
+            var formDataObject = {};
+            formData.forEach(function (value, key) {
+                formDataObject[key] = value;
+            });
+            formDataObject["token"] = token;
+            // Log form data object to console
+            console.log("Form Data:", formDataObject);
+
+            //var jsonFormData = JSON.stringify(formDataObject);
+            switch (submitValue) {
+                case 'NewAccount': //console.log('new account');
+                    fetch("http://localhost:3000/api/v1/auth/newaccount", {
+                        method: "POST",
+                        body: formDataObject
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error("Network response was not ok");
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            mssg.innerText = data.message;
+                        })
+                        .catch(error => {
+                            console.error("Error:", error);
+                            mssg.innerText=error;
+                        });
+                    break;
+                case 'DeleteAccount': console.log('delete account');
+                fetch("http://localhost:3000/api/v1/auth/deleteAccount", {
+                        method: "DELETE",
+                        body: formDataObject
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error("Network response was not ok");
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            mssg.innerText = data.message;
+                        })
+                        .catch(error => {
+                            console.error("Error:", error);
+                            mssg.innerText=error;
+                        });
+                    break;
+                case 'ChangePassword': console.log('change password');
+                fetch("http://localhost:3000/api/v1/auth/updatePassword", {
+                        method: "PUT",
+                        body: formDataObject
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error("Network response was not ok");
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            mssg.innerText = data.message;
+                        })
+                        .catch(error => {
+                            console.error("Error:", error);
+                            mssg.innerText=error;
+                        });
+                    break;
+                case 'newCase': console.log('new case');
+                fetch("http://localhost:3000/api/v1/case/newCase", {
+                        method: "POST",
+                        body: formDataObject
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error("Network response was not ok");
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            mssg.innerText = data.message;
+                        })
+                        .catch(error => {
+                            console.error("Error:", error);
+                            mssg.innerText=error;
+                        });
+                    break;
+                case 'DeleteCase': console.log('delete case');
+                fetch("http://localhost:3000/api/v1/case/deleteCase", {
+                        method: "DELETE",
+                        body: formDataObject
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error("Network response was not ok");
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            mssg.innerText = data.message;
+                        })
+                        .catch(error => {
+                            console.error("Error:", error);
+                            mssg.innerText=error;
+                        });
+                    break;
+                case 'CreateParty': console.log('create party');
+                fetch("http://localhost:3000/api/v1/party/newParty", {
+                        method: "POST",
+                        body: formDataObject
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error("Network response was not ok");
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            mssg.innerText = data.message;
+                        })
+                        .catch(error => {
+                            console.error("Error:", error);
+                            mssg.innerText=error;
+                        });
+                    break;
+                case 'DeleteParty': console.log('delete party');
+                fetch("http://localhost:3000/api/v1/party/deleteParty", {
+                        method: "DELETE",
+                        body: formDataObject
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error("Network response was not ok");
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            mssg.innerText = data.message;
+                        })
+                        .catch(error => {
+                            console.error("Error:", error);
+                            mssg.innerText=error;
+                        });
+                    break;
+            }
+            // Reset form after logging data
+            this.reset();
+        });
+    </script>
+</body>
+
+</html>
