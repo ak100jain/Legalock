@@ -16,10 +16,11 @@ const docRoutes = require("./routes/doc");
 const profileRoutes = require("./routes/profile");
 
 const { auth } = require("./middlewares/auth");
+const user = require("./models/user");
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors())
+app.use(cors());
 app.use(
 	fileUpload({
 		useTempFiles: true,
@@ -41,7 +42,12 @@ app.get('/pages/user-dashboard', auth, (req, res) => {
 		req.cookies.token ||
 		req.body.token ||
 		req.header("Authorization").replace("Bearer ", "");
-	res.render('user dashboard', { intoken: token });
+	if(req.user.role=='Admin'){
+		res.render('admin',{intoken: token});
+	}
+	else {
+		res.render('user dashboard', { intoken: token });
+	}
 });
 
 app.get('/pages/party', auth, (req, res) => {

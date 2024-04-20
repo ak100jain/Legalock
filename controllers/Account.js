@@ -130,7 +130,7 @@ exports.newAccount = async (req, res) => {
         });
     }
 };
-
+//controller for updating the password
 exports.updatePassword = async (req,res)=>{
   try {
     const { aadharNo, email } = req.body;

@@ -13,7 +13,8 @@ exports.auth = async (req, res, next) => {
 			req.cookies.token ||
 			req.body.token ||
 			req.header("Authorization").replace("Bearer ", "");
-
+			// console.log(token);
+			// console.log("welcome sir");
 		// If JWT is missing, return 401 Unauthorized response
 		if (!token) {
 			return res.status(401).json({ success: false, message: `Token Missing` });
@@ -24,7 +25,7 @@ exports.auth = async (req, res, next) => {
 			const decode = await jwt.verify(token, process.env.JWT_SECRET);
 			// Storing the decoded JWT payload in the request object for further use
 			req.user = decode;
-			//console.log(req.user);
+			// console.log(req.user);
 		} catch (error) {
 			// If JWT verification fails, return 401 Unauthorized response
 			console.error(error);
@@ -48,7 +49,6 @@ exports.auth = async (req, res, next) => {
 exports.isClient = async (req, res, next) => {
 	try {
 		const userDetails = await User.findOne({ email: req.user.email });
-
 		if (userDetails.role !== "Client") {
 			return res.status(401).json({
 				success: false,
@@ -67,8 +67,9 @@ exports.isClient = async (req, res, next) => {
 exports.isAdmin = async (req, res, next) => {
 	try {
 		const userDetails = await User.findOne({ email: req.user.email });
-
+		// console.log("we reached in admin middleware");
 		if (userDetails.role !== "Admin") {
+			console.log('we are in admin error');
 			return res.status(401).json({
 				success: false,
 				message: "This is a Protected Route for Admin",
@@ -86,7 +87,6 @@ exports.isAdmin = async (req, res, next) => {
 exports.isJudge = async (req, res, next) => {
 	try {
 		const userDetails = await User.findOne({ email: req.user.email });
-
 		if (userDetails.role !== "Judge") {
 			return res.status(401).json({
 				success: false,
