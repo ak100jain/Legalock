@@ -9,7 +9,7 @@ const {
 const  {auth, isAdmin, isJudge} = require("../middlewares/auth");
 
 router.post("/newCase",auth,isAdmin,newCase);
-router.delete("/deleteCase",auth,isAdmin,deleteCase);
+router.post("/deleteCase",auth,isAdmin,deleteCase);
 
 router.post("/getCases",auth,getCases);
 router.post("/judgeCaseDetail",auth,isJudge,judgeCaseDetail);
