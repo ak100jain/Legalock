@@ -86,8 +86,7 @@ exports.newAccount = async (req, res) => {
   exports.deleteAccount = async (req, res) => {
     try {
         const { aadharNo, email } = req.body;
-
-        if (!aadharNo && !email) {
+        if (!email && !aadharNo) {
             return res.status(400).json({
                 success: false,
                 message: "At least one field (aadharNo or email) is required",

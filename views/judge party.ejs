@@ -125,7 +125,7 @@
                 arr.forEach(clientdata => {
                     ClientNames += `${clientdata.firstName} ${clientdata.lastName}, `;
                 });
-                client.textContent += lawyerNames.slice(0, -2);
+                client.textContent += ClientNames.slice(0, -2);
 
                 const rule = document.createElement('div');
                 rule.classList = 'rule';

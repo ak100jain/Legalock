@@ -102,7 +102,7 @@
 
         const deleteform = `<div class="form-group">
                 <label for="aadharNo">Aadhar Number:</label>
-                <input type="text" id="aadharNo" name="aadharNo" required>
+                <input type="text" id="aadharNo" name="aadharNo">
             </div>
             <div class="form-group">
                 <label for="email">Email:</label>
@@ -112,7 +112,7 @@
 
         const passform = `<div class="form-group">
                 <label for="aadharNo">Aadhar Number:</label>
-                <input type="text" id="aadharNo" name="aadharNo" required>
+                <input type="text" id="aadharNo" name="aadharNo" >
             </div>
             <div class="form-group">
                 <label for="email">Email:</label>
@@ -259,20 +259,12 @@
             var submitValue = event.submitter.value;
             // Get form data as an object
             var formData = new FormData(this);
-            var formDataObject = {};
-            formData.forEach(function (value, key) {
-                formDataObject[key] = value;
-            });
-            formDataObject["token"] = token;
-            // Log form data object to console
-            console.log("Form Data:", formDataObject);
-
-            //var jsonFormData = JSON.stringify(formDataObject);
+            formData.append('token', token);
             switch (submitValue) {
                 case 'NewAccount': //console.log('new account');
                     fetch("http://localhost:3000/api/v1/auth/newaccount", {
                         method: "POST",
-                        body: formDataObject
+                        body: formData,
                     })
                         .then(response => {
                             if (!response.ok) {
@@ -290,8 +282,8 @@
                     break;
                 case 'DeleteAccount': console.log('delete account');
                 fetch("http://localhost:3000/api/v1/auth/deleteAccount", {
-                        method: "DELETE",
-                        body: formDataObject
+                        method: "POST",
+                        body: formData,
                     })
                         .then(response => {
                             if (!response.ok) {
@@ -310,7 +302,7 @@
                 case 'ChangePassword': console.log('change password');
                 fetch("http://localhost:3000/api/v1/auth/updatePassword", {
                         method: "PUT",
-                        body: formDataObject
+                        body: formData,
                     })
                         .then(response => {
                             if (!response.ok) {
@@ -329,7 +321,7 @@
                 case 'newCase': console.log('new case');
                 fetch("http://localhost:3000/api/v1/case/newCase", {
                         method: "POST",
-                        body: formDataObject
+                        body: formData,
                     })
                         .then(response => {
                             if (!response.ok) {
@@ -347,8 +339,8 @@
                     break;
                 case 'DeleteCase': console.log('delete case');
                 fetch("http://localhost:3000/api/v1/case/deleteCase", {
-                        method: "DELETE",
-                        body: formDataObject
+                        method: "POST",
+                        body: formData,
                     })
                         .then(response => {
                             if (!response.ok) {
@@ -367,7 +359,7 @@
                 case 'CreateParty': console.log('create party');
                 fetch("http://localhost:3000/api/v1/party/newParty", {
                         method: "POST",
-                        body: formDataObject
+                        body: formData,
                     })
                         .then(response => {
                             if (!response.ok) {
@@ -385,8 +377,8 @@
                     break;
                 case 'DeleteParty': console.log('delete party');
                 fetch("http://localhost:3000/api/v1/party/deleteParty", {
-                        method: "DELETE",
-                        body: formDataObject
+                        method: "POST",
+                        body: formData,
                     })
                         .then(response => {
                             if (!response.ok) {

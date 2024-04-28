@@ -9,6 +9,6 @@ const {
 const  {auth, isAdmin} = require("../middlewares/auth");
 
 router.post("/newParty",auth,isAdmin,createParty);
-router.delete("/deleteParty",auth,isAdmin,deleteParty);
+router.post("/deleteParty",auth,isAdmin,deleteParty);
 
 module.exports = router;
