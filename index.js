@@ -2,6 +2,13 @@ const express = require("express");
 const cors = require("cors")
 const fs = require('fs');
 const app = express();
+const session = require('express-session');
+
+app.use(session({
+    secret: 'your-secret-key',
+    resave: false,
+    saveUninitialized: false
+}));
 
 const database = require("./config/database");
 const cookieParser = require("cookie-parser");
@@ -102,6 +109,10 @@ const PORT = process.env.PORT || 3000;
 // app.get('/', (req, res) => {
 // 	res.sendFile(__dirname + '/view/video testing.html');
 //  })
+
+app.get('/notfound', (req, res) => {
+    res.status(404).send('Page Not Found');
+});
 
 
 //just paste it in the index.js file
