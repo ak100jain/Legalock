@@ -1,175 +1,104 @@
-const mongoose = require("mongoose");
-const User = require("../models/user");
-const Profile = require("../models/Profile");
-require("dotenv").config()
 const bcrypt = require("bcryptjs")
+const mongoose = require("mongoose");
+const User = require("../models/user")
+const jwt = require("jsonwebtoken")
+const Profile = require("../models/Profile")
+require("dotenv").config()
 
-//controller for creating new account by the admin
-exports.newAccount = async (req, res) => {
-    try {
-      // Destructure fields from the request body
-      const {
-        firstName,
-        lastName,
-        email,
-        password,
-        role,
-        contact,
-        aadharNo,
-      } = req.body
-      // Check if All Details are there or not
-      if (
-        !firstName ||
-        !lastName ||
-        !email ||
-        !password ||
-        !role ||
-        !contact ||
-        !aadharNo
-      ) {
-        return res.status(403).send({
-          success: false,
-          message: "All Fields are required",
-        })
-      }
-      
-  
-      // Check if user already exists
-      const existingUser = await User.findOne({ email })
-      if (existingUser) {
-        return res.status(400).json({
-          success: false,
-          message: "User already exists.",
-        })
-      }
-  
-      
-  
-      // Hash the password
-      const hashedPassword = await bcrypt.hash(password, 10)
-  
-      // Create the Additional Profile For User
-      const profileDetails = await Profile.create({
-        firstName: firstName,
-        lastName: lastName,
-      })
-
-      //make an entry of new user in the database
-      const user = await User.create({
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        password: hashedPassword,
-        role: role,
-        profile: profileDetails._id,
-        contact: contact,
-        aadharNo: aadharNo,
-      })
-  
-      return res.status(200).json({
-        success: true,
-        user,
-        message: "User registered successfully",
-      })
-    } catch (error) {
-      console.error(error)
-      return res.status(500).json({
-        success: false,
-        message: "User cannot be registered. Please try again.",
-      })
-    }
-  }
-
-  //have to add mailing facility so that user can get email notification with id and password and account access
-
-  //Controller for deleting the user account
-  exports.deleteAccount = async (req, res) => {
-    try {
-        const { aadharNo, email } = req.body;
-        if (!email && !aadharNo) {
-            return res.status(400).json({
-                success: false,
-                message: "At least one field (aadharNo or email) is required",
-            });
-        }
-
-        let userDetail;
-        if (aadharNo) {
-            userDetail = await User.findOne({ aadharNo });
-        } else if (email) {
-            userDetail = await User.findOne({ email });
-        }
-
-        if (!userDetail) {
-            return res.status(404).json({
-                success: false,
-                message: "User not found",
-            });
-        }
-
-        if (userDetail.cases && userDetail.cases.length > 0) {
-            return res.status(400).json({
-                success: false,
-                message: "User is involved in cases, account can't be deleted",
-            });
-        }
-
-        await Profile.findByIdAndDelete(userDetail.profile);
-        await User.findByIdAndDelete(userDetail._id);
-
-        return res.status(200).json({
-            success: true,
-            message: "User account deleted successfully",
-        });
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({
-            success: false,
-            message: "Could not delete the user account, please try again",
-        });
-    }
-};
-//controller for updating the password
-exports.updatePassword = async (req,res)=>{
+// Login controller for authenticating users
+exports.login = async (req, res) => {
   try {
-    const { aadharNo, email } = req.body;
-    const {password} = req.body;
-
-    if (!aadharNo && !email) {
-        return res.status(400).json({
-            success: false,
-            message: "At least one field (aadharNo or email) is required",
-        });
-    }
-
-    let userDetail;
-    if (aadharNo) {
-        userDetail = await User.findOne({ aadharNo });
-    } else if (email) {
-        userDetail = await User.findOne({ email });
-    }
-
-    if (!userDetail) {
-        return res.status(404).json({
-            success: false,
-            message: "User not found",
-        });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10)
-    await User.findByIdAndUpdate(userDetail._id,{
-      password:hashedPassword
-    });
-
-    return res.status(200).json({
-        success: true,
-        message: "Password updated successfully",
-    });
-} catch (error) {
-    console.error(error);
-    return res.status(500).json({
+    // Get email and password from request body
+    req.session.admin = true;
+    const { email, password } = req.body;
+    // Check if email or password is missing
+    if (!email || !password) {
+      // Return 400 Bad Request status code with error message
+      return res.status(400).json({
         success: false,
-        message: "Could not update the user password, please try again",
-    });
+        message: `Please Fill up All the Required Fields`,
+      })
+    }
+
+    // Find user with provided email
+    const user = await User.findOne({ email });
+
+    // If user not found with provided email
+    if (!user) {
+      // Return 401 Unauthorized status code with error message
+      return res.status(401).json({
+        success: false,
+        message: `User is not Registered with Us Please get register yourself to Continue`,
+      })
+    }
+
+    // Generate JWT token and Compare Password
+    if (await bcrypt.compare(password, user.password)) {
+      const token = jwt.sign(
+        { email: user.email, id: user._id, role: user.role },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "24h",
+        }
+      )
+
+      // Save token to user document in database
+      user.token = token
+      user.password = undefined
+      // Set cookie for token and return success response
+      const options = {
+        expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        httpOnly: true,
+      }
+      res.cookie("token", token, options).status(200).json({
+        success: true,
+        token,
+        user,
+        message: `User Login Success`,
+      })
+    } else {
+      return res.status(401).json({
+        success: false,
+        message: `Password is incorrect`,
+      })
+    }
+  } catch (error) {
+    console.error(error)
+    // Return 500 Internal Server Error status code with error message
+    return res.status(500).json({
+      success: false,
+      message: `Login Failure Please Try Again`,
+    })
+  }
 }
-}
+
+exports.logout = (req, res) => {
+  try {
+    // Clear JWT cookie
+    // req.session.destroy();
+
+    req.session.destroy(err => {
+      if (err) {
+          console.error('Error destroying session:', err);
+          return res.status(500).send('Internal Server Error');
+      }
+  });
+
+    res.cookie('token', '', { expires: new Date(0) });
+    res.cookie('jwt', '', { expires: new Date(0) });
+
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    res.setHeader('Expires', '0');
+    res.setHeader('Pragma', 'no-cache');
+
+    // Respond with success message
+    console.log("Logout successful");
+    return res.status(200).json({ success: true, message: "Logged out successfully" });
+    // Log success
+  } catch (error) {
+    // Log and handle errors
+    console.log("Error in logout controller", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
