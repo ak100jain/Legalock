@@ -4,6 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="expires" content="0">
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="http://localhost:3000/static/admin.css">
 </head>
@@ -70,7 +73,7 @@
     </div>
     <script src="https://kit.fontawesome.com/0fbde46a6c.js" crossorigin="anonymous"></script>
     <script>
-        const token = "<%=intoken%>";
+        let token = "<%=intoken%>";
 
         const userform = `<div class="form-group">
                             <label for="firstName">First Name:</label>
@@ -102,7 +105,7 @@
 
         const deleteform = `<div class="form-group">
                 <label for="aadharNo">Aadhar Number:</label>
-                <input type="text" id="aadharNo" name="aadharNo">
+                <input type="text" id="aadharNo" name="aadharNo" required>
             </div>
             <div class="form-group">
                 <label for="email">Email:</label>
@@ -112,7 +115,7 @@
 
         const passform = `<div class="form-group">
                 <label for="aadharNo">Aadhar Number:</label>
-                <input type="text" id="aadharNo" name="aadharNo" >
+                <input type="text" id="aadharNo" name="aadharNo" required>
             </div>
             <div class="form-group">
                 <label for="email">Email:</label>
@@ -173,6 +176,9 @@
             </div>
             <input type="submit" value="DeleteParty">`;
 
+        const logout = `<div class="form-group"></div>
+            <input type="submit" value="logout" id="logoutButton">`
+
         const topNav = document.getElementsByClassName('topnav')[0];
         const Form = document.getElementsByClassName('form-content')[0];
         const mssg = document.getElementById('message');
@@ -185,7 +191,7 @@
             // Add menu-active class to the clicked menu item
             const menuItem = document.querySelector(`.menu-item[data-page="${page}"]`);
             menuItem.classList.add('menu-active');
-            mssg.innerText="";
+            mssg.innerText = "";
             // Perform actions based on the clicked menu item
             switch (page) {
                 case 'user':
@@ -201,6 +207,7 @@
                     break;
                 case 'logout':
                     // Code for logout
+                    logoutContainer();
                     break;
                 default:
                     // Default case
@@ -210,7 +217,7 @@
 
         function activateItem(item) {
             // Remove the "active" class from all items
-            mssg.innerText="";
+            mssg.innerText = "";
             const items = document.querySelectorAll('.item');
             items.forEach(item => item.classList.remove('active'));
 
@@ -231,8 +238,16 @@
                     break;
                 case 'newParty': content.innerHTML = newParty;
                     break;
+                case 'logout': content.innerHTML = logout;
+                    break;
                 case 'deleteParty': content.innerHTML = deleteParty;
             }
+        }
+
+        function logoutContainer() {
+            topNav.innerHTML = `
+            <div class="item active" data-page="logout" onclick="activateItem(this)">Log Out</div>`;
+            Form.innerHTML = logout;
         }
 
         function userContainer() {
@@ -257,37 +272,57 @@
         document.getElementById("myForm").addEventListener("submit", function (event) {
             event.preventDefault(); // Prevent form submission
             var submitValue = event.submitter.value;
-            // Get form data as an object
+            //var jsonFormData = JSON.stringify(formData);
+
             var formData = new FormData(this);
-            formData.append('token', token);
+            formData["token"] = token;
+            // console.log("Form Data:", formData);
+            let mssg = document.getElementById('message'); // Assuming you have an element with id 'message' to display the message
+
             switch (submitValue) {
                 case 'NewAccount': //console.log('new account');
-                    fetch("http://localhost:3000/api/v1/auth/newaccount", {
-                        method: "POST",
-                        body: formData,
-                    })
-                        .then(response => {
+                    async function postData(url, formData) {
+                        try {
+                            const response = await fetch(url, {
+                                method: "POST",
+                                body: formData
+                            });
+
                             if (!response.ok) {
-                                throw new Error("Network response was not ok");
+                                throw new Error(`${response.statusText}`);
                             }
-                            return response.json();
-                        })
+
+                            const data = await response.json();
+                            return data;
+                        } catch (error) {
+                            console.error('Error:', error);
+                            throw error; // Propagate the error up to the caller
+                        }
+                    }
+
+                    const url = "http://localhost:3000/api/v1/auth/newaccount";
+
+                    postData(url, formData)
                         .then(data => {
+                            // Display the message received from the server
                             mssg.innerText = data.message;
                         })
                         .catch(error => {
-                            console.error("Error:", error);
-                            mssg.innerText=error;
+                            // Display the error message
+                            console.error('Error:', error);
+                            mssg.innerText = error.message;
                         });
                     break;
+
                 case 'DeleteAccount': console.log('delete account');
-                fetch("http://localhost:3000/api/v1/auth/deleteAccount", {
+                
+                    fetch("http://localhost:3000/api/v1/auth/deleteAccount", {
                         method: "POST",
-                        body: formData,
+                        body: formData
                     })
                         .then(response => {
                             if (!response.ok) {
-                                throw new Error("Network response was not ok");
+                                throw new Error(`${response.statusText}`);
                             }
                             return response.json();
                         })
@@ -296,32 +331,65 @@
                         })
                         .catch(error => {
                             console.error("Error:", error);
-                            mssg.innerText=error;
+                            mssg.innerText = error.message;
                         });
+
                     break;
-                case 'ChangePassword': console.log('change password');
-                fetch("http://localhost:3000/api/v1/auth/updatePassword", {
-                        method: "PUT",
-                        body: formData,
+
+                case 'logout':
+                    fetch('http://localhost:3000/api/v1/auth/logout', {
+                        method: 'POST',
+                        headers: { "Content-Type": "application/json" },
                     })
                         .then(response => {
-                            if (!response.ok) {
-                                throw new Error("Network response was not ok");
+                            if (response.ok) {
+                                // // token = null;
+                                // localStorage.removeItem('accessToken'); 
+
+                                window.location.href = `/pages/Home`;
+                                // response.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+                                // location.reload();
+                            } else {
+                                console.error('Logout failed:', response.statusText);
                             }
-                            return response.json();
+                        })
+                        .then(res => {
+                            res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
                         })
                         .then(data => {
                             mssg.innerText = data.message;
                         })
                         .catch(error => {
-                            console.error("Error:", error);
-                            mssg.innerText=error;
+                            console.error('Error:', error);
                         });
+
+                    break;
+
+                case 'ChangePassword': console.log('change password');
+
+                    // try {
+                    //     const res = fetch("http://localhost:3000/api/v1/auth/logout", {
+                    //         method: "POST",
+                    //         headers: { "Content-Type": "application/json" },
+                    //     });
+                    //     if (!res.ok) {
+                    //         // If the response status is not okay, throw an error with the status text
+                    //         throw new Error(`Logout failed: ${res.statusText}`);
+                    //     }
+
+                    //     // Clear all data stored in localStorage
+                    //     localStorage.clear();
+                    // } catch (error) {
+                    //     // Handle errors by displaying an error message
+                    //     toast.error(error.message);
+                    // }
+
+
                     break;
                 case 'newCase': console.log('new case');
-                fetch("http://localhost:3000/api/v1/case/newCase", {
+                    fetch("http://localhost:3000/api/v1/case/newCase", {
                         method: "POST",
-                        body: formData,
+                        body: formData
                     })
                         .then(response => {
                             if (!response.ok) {
@@ -334,13 +402,13 @@
                         })
                         .catch(error => {
                             console.error("Error:", error);
-                            mssg.innerText=error;
+                            mssg.innerText = error;
                         });
                     break;
                 case 'DeleteCase': console.log('delete case');
-                fetch("http://localhost:3000/api/v1/case/deleteCase", {
-                        method: "POST",
-                        body: formData,
+                    fetch("http://localhost:3000/api/v1/case/deleteCase", {
+                        method: "DELETE",
+                        body: formData
                     })
                         .then(response => {
                             if (!response.ok) {
@@ -353,13 +421,13 @@
                         })
                         .catch(error => {
                             console.error("Error:", error);
-                            mssg.innerText=error;
+                            mssg.innerText = error;
                         });
                     break;
                 case 'CreateParty': console.log('create party');
-                fetch("http://localhost:3000/api/v1/party/newParty", {
+                    fetch("http://localhost:3000/api/v1/party/newParty", {
                         method: "POST",
-                        body: formData,
+                        body: formData
                     })
                         .then(response => {
                             if (!response.ok) {
@@ -372,13 +440,13 @@
                         })
                         .catch(error => {
                             console.error("Error:", error);
-                            mssg.innerText=error;
+                            mssg.innerText = error;
                         });
                     break;
                 case 'DeleteParty': console.log('delete party');
-                fetch("http://localhost:3000/api/v1/party/deleteParty", {
-                        method: "POST",
-                        body: formData,
+                    fetch("http://localhost:3000/api/v1/party/deleteParty", {
+                        method: "DELETE",
+                        body: formData
                     })
                         .then(response => {
                             if (!response.ok) {
@@ -391,13 +459,47 @@
                         })
                         .catch(error => {
                             console.error("Error:", error);
-                            mssg.innerText=error;
+                            mssg.innerText = error;
                         });
                     break;
             }
             // Reset form after logging data
             this.reset();
         });
+
+        function removetokens(token) {
+            //   // Get the current URL
+            let currentUrl = window.location.href;
+
+            // Remove the token parameter from the URL
+            let urlWithoutToken = removeQueryParam(currentUrl, 'token');
+
+            // Redirect to the modified URL
+            window.location.href = urlWithoutToken;
+
+            // Function to remove a query parameter from a URL
+            function removeQueryParam(url, param) {
+                let urlParts = url.split('?');
+                if (urlParts.length >= 2) {
+                    let prefix = encodeURIComponent(param) + '=';
+                    let queryParams = urlParts[1].split(/[&;]/g);
+
+                    // Iterate through query parameters to find and remove the token parameter
+                    for (let i = queryParams.length - 1; i >= 0; i--) {
+                        if (queryParams[i].lastIndexOf(prefix, 0) !== -1) {
+                            queryParams.splice(i, 1);
+                        }
+                    }
+
+                    // Reconstruct the URL without the token parameter
+                    return urlParts[0] + (queryParams.length > 0 ? '?' + queryParams.join('&') : '');
+                }
+                return url;
+            }
+        };
+
+
+
     </script>
 </body>
 

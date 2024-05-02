@@ -80,7 +80,19 @@ exports.isAdmin = async (req, res, next) => {
 		return res
 			.status(500)
 			.json({ success: false, message: `User Role Can't be Verified` });
-	}
+	} 
+};
+
+exports.isAdminLoggedIn = (req, res, next) => {
+	// console.log("we are in isAdminLoggedIn middleware")
+    if (req.session && req.session.admin) {
+        // Admin is logged in
+        next();
+    } else {
+        // Admin is not logged in, redirect to login page or return unauthorized
+		return res.status(200).json({ success: false, message: 'Admin not logged in' });
+        		// .redirect('/notfound'); 
+    }
 };
 
 //middleware for judge

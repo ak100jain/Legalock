@@ -5,11 +5,11 @@ const jwt = require("jsonwebtoken")
 const Profile = require("../models/Profile")
 require("dotenv").config()
 
-
 // Login controller for authenticating users
 exports.login = async (req, res) => {
   try {
     // Get email and password from request body
+    req.session.admin = true;
     const { email, password } = req.body;
     // Check if email or password is missing
     if (!email || !password) {
@@ -71,3 +71,34 @@ exports.login = async (req, res) => {
     })
   }
 }
+
+exports.logout = (req, res) => {
+  try {
+    // Clear JWT cookie
+    // req.session.destroy();
+
+    req.session.destroy(err => {
+      if (err) {
+          console.error('Error destroying session:', err);
+          return res.status(500).send('Internal Server Error');
+      }
+  });
+
+    res.cookie('token', '', { expires: new Date(0) });
+    res.cookie('jwt', '', { expires: new Date(0) });
+
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    res.setHeader('Expires', '0');
+    res.setHeader('Pragma', 'no-cache');
+
+    // Respond with success message
+    console.log("Logout successful");
+    return res.status(200).json({ success: true, message: "Logged out successfully" });
+    // Log success
+  } catch (error) {
+    // Log and handle errors
+    console.log("Error in logout controller", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
