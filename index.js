@@ -37,7 +37,6 @@ app.use(
 
 //EJS view engine setup
 app.set('view engine', 'ejs');
-
 app.use('/static', express.static('static'));
 app.use('/records', express.static('Records'));
 //User Interface Routes

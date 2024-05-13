@@ -105,7 +105,7 @@
 
         const deleteform = `<div class="form-group">
                 <label for="aadharNo">Aadhar Number:</label>
-                <input type="text" id="aadharNo" name="aadharNo" required>
+                <input type="text" id="aadharNo" name="aadharNo">
             </div>
             <div class="form-group">
                 <label for="email">Email:</label>
@@ -115,7 +115,7 @@
 
         const passform = `<div class="form-group">
                 <label for="aadharNo">Aadhar Number:</label>
-                <input type="text" id="aadharNo" name="aadharNo" required>
+                <input type="text" id="aadharNo" name="aadharNo" >
             </div>
             <div class="form-group">
                 <label for="email">Email:</label>
@@ -138,7 +138,7 @@
             <div class="form-group">
                 <label for="judgeId">Judge:</label>
                 <select id="judgeId" name="judgeId">
-                    <option value="judge1">Judge 1</option>
+                    <option value="65f6fcef9c82c002b638fe6b">Judge 1</option>
                     <option value="judge2">Judge 2</option>
                     <option value="judge3">Judge 3</option>
                 </select>
@@ -172,7 +172,7 @@
 
         const deleteParty = `<div class="form-group">
                 <label for="partyId">Party Id:</label>
-                <input type="text" id="partyId" name="partyId" required>
+                <input type="text" id="partyId" name="partyID" required>
             </div>
             <input type="submit" value="DeleteParty">`;
 
@@ -343,8 +343,8 @@
                     })
                         .then(response => {
                             if (response.ok) {
-                                // // token = null;
-                                // localStorage.removeItem('accessToken'); 
+                                token = "";
+                                localStorage.removeItem('token'); 
 
                                 window.location.href = `/pages/Home`;
                                 // response.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
@@ -367,23 +367,23 @@
 
                 case 'ChangePassword': console.log('change password');
 
-                    // try {
-                    //     const res = fetch("http://localhost:3000/api/v1/auth/logout", {
-                    //         method: "POST",
-                    //         headers: { "Content-Type": "application/json" },
-                    //     });
-                    //     if (!res.ok) {
-                    //         // If the response status is not okay, throw an error with the status text
-                    //         throw new Error(`Logout failed: ${res.statusText}`);
-                    //     }
-
-                    //     // Clear all data stored in localStorage
-                    //     localStorage.clear();
-                    // } catch (error) {
-                    //     // Handle errors by displaying an error message
-                    //     toast.error(error.message);
-                    // }
-
+                fetch("http://localhost:3000/api/v1/auth/updatePassword", {
+                        method: "PUT",
+                        body: formData
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`${response.statusText}`);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            mssg.innerText = data.message;
+                        })
+                        .catch(error => {
+                            console.error("Error:", error);
+                            mssg.innerText = error;
+                        });
 
                     break;
                 case 'newCase': console.log('new case');
@@ -407,7 +407,7 @@
                     break;
                 case 'DeleteCase': console.log('delete case');
                     fetch("http://localhost:3000/api/v1/case/deleteCase", {
-                        method: "DELETE",
+                        method: "POST",
                         body: formData
                     })
                         .then(response => {
@@ -431,7 +431,7 @@
                     })
                         .then(response => {
                             if (!response.ok) {
-                                throw new Error("Network response was not ok");
+                                throw new Error(`${response.statusText}`);
                             }
                             return response.json();
                         })
@@ -445,12 +445,12 @@
                     break;
                 case 'DeleteParty': console.log('delete party');
                     fetch("http://localhost:3000/api/v1/party/deleteParty", {
-                        method: "DELETE",
+                        method: "POST",
                         body: formData
                     })
                         .then(response => {
                             if (!response.ok) {
-                                throw new Error("Network response was not ok");
+                                throw new Error(`${response.statusText}`);
                             }
                             return response.json();
                         })

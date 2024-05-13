@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const User = require("../models/user");
 const Profile = require("../models/Profile");
 require("dotenv").config()
-const {isAdmin} = require("../middlewares/auth")
 const bcrypt = require("bcryptjs");
 const { log } = require("console");
 
@@ -89,31 +88,24 @@ exports.newAccount = async (req, res) => {
 exports.deleteAccount = async (req, res) => {
   try {
 
-    if(!isAdmin){
-      return res.status(403).send({
-        success: false,
-        message: "You are not admin",
-      })
-    }
-
     const { aadharNo, email } = req.body;
 
-    if (!aadharNo || !email) {
+    if (!aadharNo && !email) {
       return res.status(400).json({
         success: false,
         message: "Both Aadhar number and email are required",
       });
     }
 
-    const aadhar = await User.findOne({ aadharNo });
+    //const aadhar = await User.findOne({ aadharNo });
     const mail = await User.findOne({ email });
 
-    if (!aadhar) {
-      return res.status(404).json({
-        success: false,
-        message: "Aadhar Number not found",
-      });
-    }
+    // if (!aadhar) {
+    //   return res.status(404).json({
+    //     success: false,
+    //     message: "Aadhar Number not found",
+    //   });
+    // }
  
     if (!mail) {
       return res.status(404).json({
@@ -122,8 +114,8 @@ exports.deleteAccount = async (req, res) => {
       });
     }
 
-    if (aadhar && mail) {
-      if (aadhar.cases && aadhar.cases.length > 0) {
+    if (mail) {
+      if (mail.cases && mail.cases.length > 0) {
         return res.status(400).json({
           success: false,
           message: "User is involved in cases, account can't be deleted",
@@ -131,7 +123,8 @@ exports.deleteAccount = async (req, res) => {
       }
 
       // Assuming user has a profile reference, you should handle it accordingly
-      if (aadhar && mail) {
+      if (mail) {
+        //console.log('hello, this is the pART where we are deleting the user account :',mail);
       await Profile.findByIdAndDelete(mail.profile);
       await User.findByIdAndDelete(mail._id);
       }
@@ -154,6 +147,7 @@ exports.deleteAccount = async (req, res) => {
 //controller for updating the password
 exports.updatePassword = async (req, res) => {
   try {
+    //console.log('hello update password');
     const { aadharNo, email } = req.body;
     const { password } = req.body;
 
@@ -164,6 +158,7 @@ exports.updatePassword = async (req, res) => {
       });
     }
 
+    //console.log('cheking');
     let userDetail;
     if (aadharNo) {
       userDetail = await User.findOne({ aadharNo });
@@ -172,6 +167,7 @@ exports.updatePassword = async (req, res) => {
     }
 
     if (!userDetail) {
+      console.log(userDetail);
       return res.status(404).json({
         success: false,
         message: "User not found",

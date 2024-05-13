@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
-
+const InvalidTokens = require("../models/invalidTokens");
 dotenv.config();
 
 // This function is used as middleware to authenticate user requests
@@ -19,12 +19,17 @@ exports.auth = async (req, res, next) => {
 		if (!token) {
 			return res.status(401).json({ success: false, message: `Token Missing` });
 		}
-
+		const invalid = await InvalidTokens.findOne({token});
+		if(invalid){
+			return res.status(401).json({ success: false, message: `You need to Log In!!` });
+			};
+		
 		try {
 			// Verifying the JWT using the secret key stored in environment variables
 			const decode = await jwt.verify(token, process.env.JWT_SECRET);
 			// Storing the decoded JWT payload in the request object for further use
 			req.user = decode;
+			req.user.token = token;
 			// console.log(req.user);
 		} catch (error) {
 			// If JWT verification fails, return 401 Unauthorized response
@@ -81,18 +86,6 @@ exports.isAdmin = async (req, res, next) => {
 			.status(500)
 			.json({ success: false, message: `User Role Can't be Verified` });
 	} 
-};
-
-exports.isAdminLoggedIn = (req, res, next) => {
-	// console.log("we are in isAdminLoggedIn middleware")
-    if (req.session && req.session.admin) {
-        // Admin is logged in
-        next();
-    } else {
-        // Admin is not logged in, redirect to login page or return unauthorized
-		return res.status(200).json({ success: false, message: 'Admin not logged in' });
-        		// .redirect('/notfound'); 
-    }
 };
 
 //middleware for judge

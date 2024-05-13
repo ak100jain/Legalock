@@ -3,13 +3,13 @@ const mongoose = require("mongoose");
 const User = require("../models/user")
 const jwt = require("jsonwebtoken")
 const Profile = require("../models/Profile")
+const InvalidTokens = require("../models/invalidTokens");
 require("dotenv").config()
 
 // Login controller for authenticating users
 exports.login = async (req, res) => {
   try {
     // Get email and password from request body
-    req.session.admin = true;
     const { email, password } = req.body;
     // Check if email or password is missing
     if (!email || !password) {
@@ -72,20 +72,23 @@ exports.login = async (req, res) => {
   }
 }
 
-exports.logout = (req, res) => {
+exports.logout = async (req, res) => {
   try {
     // Clear JWT cookie
     // req.session.destroy();
 
-    req.session.destroy(err => {
-      if (err) {
-          console.error('Error destroying session:', err);
-          return res.status(500).send('Internal Server Error');
-      }
-  });
+  //   req.session.destroy(err => {
+  //     if (err) {
+  //         console.error('Error destroying session:', err);
+  //         return res.status(500).send('Internal Server Error');
+  //     }
+  // });
+    // Get the token from the authenticated user (assuming it's stored in req.user.token)
+    const token = req.user.token;
 
+    // Create an entry for the invalid token in the database
+    await InvalidTokens.create({ token });
     res.cookie('token', '', { expires: new Date(0) });
-    res.cookie('jwt', '', { expires: new Date(0) });
 
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     res.setHeader('Expires', '0');

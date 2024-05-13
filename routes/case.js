@@ -8,8 +8,8 @@ const {
 
 const  {auth, isAdmin,isAdminLoggedIn, isJudge} = require("../middlewares/auth");
 
-router.post("/newCase",auth,isAdmin,isAdminLoggedIn,newCase);
-router.delete("/deleteCase",auth,isAdmin,isAdminLoggedIn,deleteCase);
+router.post("/newCase",auth,isAdmin,newCase);
+router.post("/deleteCase",auth,isAdmin,deleteCase);
 
 router.post("/getCases",auth,getCases);
 router.post("/judgeCaseDetail",auth,isJudge,judgeCaseDetail);
