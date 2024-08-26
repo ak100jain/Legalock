@@ -21,7 +21,7 @@ exports.auth = async (req, res, next) => {
 		}
 		const invalid = await InvalidTokens.findOne({token});
 		if(invalid){
-			return res.status(401).json({ success: false, message: `You need to Log In!!` });
+			return res.status(401).json({ success: false, message: `You need to Log in` });
 			};
 		
 		try {

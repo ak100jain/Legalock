@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pdf Viewer</title>
-  <link rel="stylesheet" href="http://localhost:3000/static/styleparty.css">
+  <link rel="stylesheet" href="/static/styleparty.css">
   <script 
 src="http://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.0.943/pdf.min.js">
   </script>
@@ -25,7 +25,7 @@ src="http://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.0.943/pdf.min.js">
 <body>
   <div class="Dashboard">
     <nav class="navbar">
-      <div class="logo"><img src="http://localhost:3000/static/svg-image-1.png" alt="logo"></div>
+      <div class="logo"><img src="/static/svg-image-1.png" alt="logo"></div>
       <ul>
           <li><a href="#">Home</a></li>
           <li><a href="#">About</a></li>
@@ -73,7 +73,7 @@ src="http://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.0.943/pdf.min.js">
         zoom: 1
     }
  
-    pdfjsLib.getDocument('http://localhost:3000/records/<%=fileLink%>').then((pdf) => {
+    pdfjsLib.getDocument('/records/<%=fileLink%>').then((pdf) => {
  
         myState.pdf = pdf;
         render();

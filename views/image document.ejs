@@ -5,12 +5,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Image Viewer</title>
-  <link rel="stylesheet" href="http://localhost:3000/static/styleparty.css">
+  <link rel="stylesheet" href="/static/styleparty.css">
 </head>
 <body>
   <div class="Dashboard">
     <nav class="navbar">
-      <div class="logo"><img src="http://localhost:3000/static/svg-image-1.png" alt="logo"></div>
+      <div class="logo"><img src="/static/svg-image-1.png" alt="logo"></div>
       <ul>
           <li><a href="#">Home</a></li>
           <li><a href="#">About</a></li>
@@ -21,7 +21,7 @@
     <main>
       <div class="cases">
         <h2><%=fileName%></h2>
-        <img src="http://localhost:3000/records/<%=fileLink%>" width="1080px"></img>
+        <img src="/records/<%=fileLink%>" width="1080px"></img>
       </div>
       <div class="CaseInfo">
         <div class="caseheading">Case Information</div>

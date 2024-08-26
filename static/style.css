@@ -1,23 +1,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Croissant+One&family=Josefin+Sans&family=Merriweather&family=Pacifico&family=Playfair+Display:ital@1&display=swap');
 
-*{
+* {
     margin: 0;
     padding: 0;
 }
 
 /* color code block */
-:root{
+:root {
     --yellow-color: #ffd700;
-    --light-yellow-color:#ffd900be;
-    --light-white-color:rgba(255, 255, 255, 0.399);
-    --red-color:#e03c31;
-    --violet-color:#671e75;
-    --blue-color:#4f758b;
-    --white-color:#ffffff;
+    --light-yellow-color: #ffd900be;
+    --light-white-color: rgba(255, 255, 255, 0.399);
+    --red-color: #e03c31;
+    --violet-color: #671e75;
+    --blue-color: #4f758b;
+    --white-color: #ffffff;
 }
 
 /* font family block */
-:root{
+:root {
     --Croissant: 'Croissant One', serif;
     --Josefin: 'Josefin Sans', sans-serif;
     --Merriweather: 'Merriweather', serif;
@@ -25,7 +25,7 @@
     --Playfair: 'Playfair Display', serif;
 }
 
-.home{
+.home {
     background: url("./bg-dark.jpg");
     height: 100vh;
     width: 100%;
@@ -37,7 +37,7 @@
     background-size: cover;
 }
 
-.navbar{
+.navbar {
     display: flex;
     width: 100%;
     /* background-color: rgba(0, 0, 0, 0.77); */
@@ -46,24 +46,24 @@
     align-items: center;
 }
 
-.logo{
+.logo {
     width: 50%;
     height: 200%;
 }
 
-.logo img{
+.logo img {
     width: 30%;
     height: 100%;
 }
 
-ul{
+ul {
     width: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-ul li{
+ul li {
     list-style: none;
     font-family: var(--Croissant);
     font-size: 25px;
@@ -71,7 +71,7 @@ ul li{
 }
 
 
-.navbar ul li:nth-child(5) i{
+.navbar ul li:nth-child(5) i {
     height: 50px;
     width: 50px;
     border-radius: 50%;
@@ -84,13 +84,13 @@ ul li{
     justify-content: center;
 }
 
-ul li a{
-    color:var(--white-color);
+ul li a {
+    color: var(--white-color);
     position: relative;
     text-decoration: none;
 }
 
-ul li a::after{
+ul li a::after {
     content: '';
     width: 0%;
     height: 3px;
@@ -101,11 +101,11 @@ ul li a::after{
     transition: 0.5s;
 }
 
-ul li a:hover::after{
+ul li a:hover::after {
     width: 100%;
 }
 
-.container{
+.container {
     height: 60%;
     width: 80%;
     /* border: 2px solid white; */
@@ -115,7 +115,7 @@ ul li a:hover::after{
     justify-content: space-between;
 }
 
-.container .content{
+.container .content {
     height: 80%;
     width: 50%;
     font-family: var(--Merriweather);
@@ -128,13 +128,13 @@ ul li a:hover::after{
     color: var(--light-white-color);
 }
 
-.container .content h1{
+.container .content h1 {
     font-family: var(--Playfair);
     font-size: 45px;
     padding-bottom: 15px;
 }
 
-.container .login{
+.container .login {
     /* padding: 25px; */
     height: 80%;
     width: 40%;
@@ -146,31 +146,78 @@ ul li a:hover::after{
     flex-direction: column;
 }
 
-.container .login form{
+.container .login form {
     /* width: 100%; */
     display: flex;
     flex-direction: column;
 }
 
-.container .login h2{
+.container .login h2 {
     font-family: var(--Merriweather);
     font-size: 40px;
     margin-bottom: 15px;
     text-decoration: underline;
 }
 
-.container .login input{
+.container .login input {
     font-size: 20px;
     margin: 5px 0px;
     outline: none;
     padding: 10px;
 }
 
-.container .login button{
+.container .login button {
     cursor: pointer;
     width: 100%;
     font-size: 20px;
     margin: 15px 0px;
     padding: 10px;
     background-color: var(--light-yellow-color);
+}
+
+.rule {
+    width: 100%;
+    height: 1px;
+    background-color: var(--white1);
+}
+
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    padding: 1rem 3rem;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    z-index: 10;
+    background-color: white;
+    border: 2px solid black;
+    border-radius: 5px;
+}
+
+.popup button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 1rem;
+}
+
+.popup button:hover {
+    background-color: #0056b3;
+}
+
+.popup h2,
+.popup p {
+    color: black;
+    margin: 0.55rem 0rem;
+}
+
+.hidden {
+    display: none;
 }

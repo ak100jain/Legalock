@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lawyer Document</title>
-  <link rel="stylesheet" href="http://localhost:3000/static/styleparty.css">
+  <link rel="stylesheet" href="/static/styleparty.css">
   <!-- modal form css -->
   <style>
     /*add full-width input fields*/
@@ -262,7 +262,7 @@
 <body>
   <div class="Dashboard">
     <nav class="navbar">
-      <div class="logo"><img src="http://localhost:3000/static/svg-image-1.png" alt="logo"></div>
+      <div class="logo"><img src="/static/svg-image-1.png" alt="logo"></div>
       <ul>
         <li><a href="#">Home</a></li>
         <li><a href="#">About</a></li>
@@ -316,6 +316,12 @@
         </form>
       </div>
     </main>
+    <div id="popup" class="popup hidden">
+      <h2>Unauthorized</h2>
+      <div class="rule"></div>
+      <p>You are not authorized, You need to log in.</p>
+      <button type="button" id="okButton">OK</button>
+    </div>
   </div>
   <script src="https://kit.fontawesome.com/0fbde46a6c.js" crossorigin="anonymous"></script>
 
@@ -327,6 +333,25 @@
     var deleteModal = document.getElementById('deleteModal');
     var uploadButton = document.querySelector('.upload');
     var deleteButton = document.querySelector('.delete');
+
+    const popup = document.getElementById('popup');
+    const okButton = document.getElementById('okButton');
+
+    // Function to show the popup
+    function showPopup() {
+      popup.classList.remove('hidden');
+    }
+
+
+    // Event listener for OK button click
+    okButton.addEventListener('click',()=>{window.location.href = `/pages/Home`;} );
+
+    // Simulated API response handler
+    function handleApiResponse(response) {
+      if (response.status === 401) {
+        showPopup();
+      }
+    }
 
     // Function to close any open modals
     function closeModals() {
@@ -390,11 +415,12 @@
       formData.append('partyID', partyID);
 
       // Make a fetch request to the server
-      fetch('http://localhost:3000/api/v1/doc/newRecord', {
+      fetch('/api/v1/doc/newRecord', {
         method: 'POST',
         body: formData
       })
         .then(response => {
+          handleApiResponse(response);
           if (!response.ok) {
             throw new Error('Network response was not ok');
           }
@@ -425,7 +451,7 @@
         docID: docID
     };
 
-    fetch('http://localhost:3000/api/v1/doc/deleteRecord', {
+    fetch('/api/v1/doc/deleteRecord', {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'
@@ -433,6 +459,7 @@
         body: JSON.stringify(deleteBody)
     })
     .then(response => {
+      handleApiResponse(response);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
@@ -452,7 +479,7 @@
 
     async function fetchDataAndArrange() {
 
-      const response = await fetch("http://localhost:3000/api/v1/case/caseDetail", {
+      const response = await fetch("/api/v1/case/caseDetail", {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -460,6 +487,7 @@
         },
         body: requestBody,
       });
+      handleApiResponse(response);
       const responseData = await response.json(); // Parse the JSON response
       if (responseData.success) {
         const doc = responseData.caseData.documents; // Access the array of case objects
@@ -488,7 +516,7 @@
 
         const img = document.createElement('img');
         img.classList = "folder-icon";
-        img.setAttribute('src', 'http://localhost:3000/static/folder image.png');
+        img.setAttribute('src', '/static/folder image.png');
         img.setAttribute('alt', 'Folder Icon');
 
         const fileDetails = document.createElement('div');
@@ -570,7 +598,7 @@
 
     fetchDataAndArrange();
     function newpage(fileName,fileLink){
-      window.location.href = `http://localhost:3000/pages/doc-view?token=${token}&fileName=${fileName}&fileLink=${fileLink}`;
+      window.location.href = `/pages/doc-view?token=${token}&fileName=${fileName}&fileLink=${fileLink}`;
     };
   </script>
 </body>

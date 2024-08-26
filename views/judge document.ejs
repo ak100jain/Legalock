@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Judge Document</title>
-  <link rel="stylesheet" href="http://localhost:3000/static/styleparty.css">
+  <link rel="stylesheet" href="/static/styleparty.css">
   <!-- modal form css -->
   <style>
     /*add full-width input fields*/
@@ -180,7 +180,7 @@
 <body>
   <div class="Dashboard">
     <nav class="navbar">
-      <div class="logo"><img src="http://localhost:3000/static/svg-image-1.png" alt="logo"></div>
+      <div class="logo"><img src="/static/svg-image-1.png" alt="logo"></div>
       <ul>
         <li><a href="#">Home</a></li>
         <li><a href="#">About</a></li>
@@ -202,6 +202,12 @@
         </div>
       </div>
     </main>
+    <div id="popup" class="popup hidden">
+      <h2>Unauthorized</h2>
+      <div class="rule"></div>
+      <p>You are not authorized, You need to log in.</p>
+      <button type="button" id="okButton">OK</button>
+    </div>
   </div>
   <script src="https://kit.fontawesome.com/0fbde46a6c.js" crossorigin="anonymous"></script>
   <script>
@@ -213,9 +219,28 @@
       partyID
     });
 
+    const popup = document.getElementById('popup');
+    const okButton = document.getElementById('okButton');
+
+    // Function to show the popup
+    function showPopup() {
+      popup.classList.remove('hidden');
+    }
+
+
+    // Event listener for OK button click
+    okButton.addEventListener('click',()=>{window.location.href = `/pages/Home`;} );
+
+    // Simulated API response handler
+    function handleApiResponse(response) {
+      if (response.status === 401) {
+        showPopup();
+      }
+    }
+
     async function fetchDataAndArrange() {
 
-      const response = await fetch("http://localhost:3000/api/v1/case/partyDetail", {
+      const response = await fetch("/api/v1/case/partyDetail", {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -223,6 +248,7 @@
         },
         body: requestBody,
       });
+      handleApiResponse(response);
       const responseData = await response.json(); // Parse the JSON response
       if (responseData.success) {
         const party = responseData.partyDetail.documents; // Access the array of case objects
@@ -247,7 +273,7 @@
 
         const img = document.createElement('img');
         img.classList = "folder-icon";
-        img.setAttribute('src', 'http://localhost:3000/static/folder image.png');
+        img.setAttribute('src', '/static/folder image.png');
         img.setAttribute('alt', 'Folder Icon');
 
         const fileDetails = document.createElement('div');
@@ -325,7 +351,7 @@
     // Immediately call the async function to fetch data and arrange cards
     fetchDataAndArrange();
     function newpage(fileName,fileLink){
-      window.location.href = `http://localhost:3000/pages/doc-view?token=${token}&fileName=${fileName}&fileLink=${fileLink}`;
+      window.location.href = `/pages/doc-view?token=${token}&fileName=${fileName}&fileLink=${fileLink}`;
     };
   </script>
 </body>

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Judge Party</title>
-    <link rel="stylesheet" href="http://localhost:3000/static/judgeparty.css">
+    <link rel="stylesheet" href="/static/judgeparty.css">
     <style>
         .card {
             width: 40%;
@@ -42,7 +42,7 @@
 <body>
     <div class="Dashboard">
         <nav class="navbar">
-            <div class="logo"><img src="http://localhost:3000/static/svg-image-1.png" alt="logo"></div>
+            <div class="logo"><img src="/static/svg-image-1.png" alt="logo"></div>
             <ul>
                 <li><a href="#">Home</a></li>
                 <li><a href="#">About</a></li>
@@ -65,6 +65,12 @@
                 </div>
             </div>
         </main>
+        <div id="popup" class="popup hidden">
+            <h2>Unauthorized</h2>
+            <div class="rule"></div>
+            <p>You are not authorized, You need to log in.</p>
+            <button type="button" id="okButton">OK</button>
+        </div>
     </div>
     <script src="https://kit.fontawesome.com/0fbde46a6c.js" crossorigin="anonymous"></script>
     <script>
@@ -75,9 +81,29 @@
             caseID: caseId
         });
 
+        const popup = document.getElementById('popup');
+        const okButton = document.getElementById('okButton');
+
+        // Function to show the popup
+        function showPopup() {
+            popup.classList.remove('hidden');
+        }
+
+
+        // Event listener for OK button click
+        okButton.addEventListener('click', () => { window.location.href = `/pages/Home`; });
+
+        // Simulated API response handler
+        function handleApiResponse(response) {
+            if (response.status === 401) {
+                showPopup();
+            }
+        }
+
+
         async function fetchDataAndArrange() {
 
-            const response = await fetch("http://localhost:3000/api/v1/case/judgeCaseDetail", {
+            const response = await fetch("/api/v1/case/judgeCaseDetail", {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -85,6 +111,7 @@
                 },
                 body: requestBody,
             });
+            handleApiResponse(response);
             const responseData = await response.json(); // Parse the JSON response
             if (responseData.success) {
                 const party = responseData.caseDetail.Party; // Access the array of case objects
@@ -194,7 +221,7 @@
         // fetchProfile();
         function newpage(partyID) {
             //console.log(token);
-            window.location.href = `http://localhost:3000/pages/judge-document?token=${token}&partyID=${partyID}`;
+            window.location.href = `/pages/judge-document?token=${token}&partyID=${partyID}`;
         };
 
     </script>

@@ -5,13 +5,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>User Dashboard</title>
-  <link rel="stylesheet" href="http://localhost:3000/static/style1.css">
+  <link rel="stylesheet" href="/static/style1.css">
 </head>
 
 <body>
   <div class="Dashboard">
     <nav class="navbar">
-      <div class="logo"><img src="http://localhost:3000/static/svg-image-1.png" alt="logo"></div>
+      <div class="logo"><img src="/static/svg-image-1.png" alt="logo"></div>
       <ul>
         <li><a href="#">Home</a></li>
         <li><a href="#">About</a></li>
@@ -46,7 +46,7 @@
         </div>
       </div>
       <div class="profile">
-        <div class="profileIMG"><img src="http://localhost:3000/static/testIMG.jpg" alt=""></div>
+        <div class="profileIMG"><img src="/static/testIMG.jpg" alt=""></div>
         <h1 id="name"> </h1>
         <div class="rule"></div>
         <div class="chats">
@@ -54,21 +54,46 @@
         </div>
       </div>
     </main>
+    <div id="popup" class="popup hidden">
+      <h2>Unauthorized</h2>
+      <div class="rule"></div>
+      <p>You are not authorized, You need to log in.</p>
+      <button type="button" id="okButton">OK</button>
+    </div>
   </div>
   <script src="https://kit.fontawesome.com/0fbde46a6c.js" crossorigin="anonymous"></script>
   <script>
     const token = "<%=intoken%>";
 
+    const popup = document.getElementById('popup');
+    const okButton = document.getElementById('okButton');
+
+    // Function to show the popup
+    function showPopup() {
+      popup.classList.remove('hidden');
+    }
+
+
+    // Event listener for OK button click
+    okButton.addEventListener('click',()=>{window.location.href = `/pages/Home`;} );
+
+    // Simulated API response handler
+    function handleApiResponse(response) {
+      if (response.status === 401) {
+        showPopup();
+      }
+    }
     // Define an async function to fetch data and arrange cards
     // Define an async function to fetch data and arrange cards
     async function fetchProfile() {
 
-      const response = await fetch("http://localhost:3000/api/v1/user/profile", {
+      const response = await fetch("/api/v1/user/profile", {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
+      handleApiResponse(response);
       const responseData = await response.json(); // Parse the JSON response
       if (responseData.success) {
         const prof = responseData.data; // Access the array of case objects
@@ -81,12 +106,13 @@
     }
     async function fetchDataAndArrange() {
 
-      const response = await fetch("http://localhost:3000/api/v1/case/getCases", {
+      const response = await fetch("/api/v1/case/getCases", {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
+      handleApiResponse(response);
       const responseData = await response.json(); // Parse the JSON response
       if (responseData.success) {
         const cases = responseData.data; // Access the array of case objects
@@ -143,7 +169,7 @@
           }
         };
         // Create a hidden input element
-        
+
         card.appendChild(hiddenInput);
         lower.appendChild(btn);
         card.appendChild(upper);
@@ -156,11 +182,11 @@
     // Immediately call the async function to fetch data and arrange cards
     fetchDataAndArrange();
     fetchProfile();
-    function newpage(caseID){
+    function newpage(caseID) {
       console.log(token);
-      window.location.href = `http://localhost:3000/pages/party?token=${token}&caseID=${caseID}`;
+      window.location.href = `/pages/party?token=${token}&caseID=${caseID}`;
     };
- 
+
   </script>
 </body>
 
